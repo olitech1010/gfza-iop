@@ -1,11 +1,14 @@
+# Module 3: Admin Panel & Dashboards
 
-## MODULE 3: SUPER ADMIN DASHBOARD & MANAGEMENT
-
+**Duration:** 8-10 days  
+**Dependencies:** Module 0, Module 1, Module 2  
 **Objective:** Build comprehensive admin panel with CRUD operations for all system entities and audit logging.
 
-**Dependencies:** Module 0, 1, 2
+---
 
-**Key Files:**
+
+
+
 ```
 Controllers:
 - AdminController.php
@@ -25,7 +28,11 @@ Views/Pages:
 - Settings
 ```
 
+
+---
+
 ### 3.1 Admin Dashboard Overview
+
 
 **Tasks:**
 - [ ] Create AdminController::dashboard()
@@ -55,7 +62,11 @@ Bottom Row:
 - Module Status (list with indicators)
 ```
 
+
+---
+
 ### 3.2 User Management CRUD
+
 
 **Tasks:**
 - [ ] Create UserManagementController with methods:
@@ -102,7 +113,11 @@ POST /api/v1/admin/users
 }
 ```
 
+
+---
+
 ### 3.3 User Management UI
+
 
 **Tasks:**
 - [ ] Create User Management page
@@ -144,7 +159,11 @@ POST /api/v1/admin/users
 - [ ] All form validation works
 - [ ] Mobile responsive
 
+
+---
+
 ### 3.4 Role & Permission Management
+
 
 **Tasks:**
 - [ ] Create RolePermissionController
@@ -199,7 +218,11 @@ Staff:
 - book_rooms
 ```
 
+
+---
+
 ### 3.5 Audit Logging System
+
 
 **Tasks:**
 - [ ] Create AuditLog model and migration
@@ -231,7 +254,11 @@ Staff:
 - Filter logs by date → works correctly
 ```
 
+
+---
+
 ### 3.6 System Settings
+
 
 **Tasks:**
 - [ ] Create Settings page
@@ -246,7 +273,11 @@ Staff:
 - [ ] Add environment-based defaults
 - [ ] Test settings apply system-wide
 
+
+---
+
 ### 3.7 Audit Trail Export
+
 
 **Tasks:**
 - [ ] Add export button on Audit Logs page
@@ -263,7 +294,11 @@ Staff:
 - Date range correct
 ```
 
+
+---
+
 ### 3.8 Module 3 Integration Testing
+
 
 **Test Cases:**
 ```php
@@ -293,7 +328,11 @@ test('unauthorized user cannot access admin panel')
 - [ ] Export logs to CSV → file downloads and opens correctly
 - [ ] All pages responsive
 
+
+---
+
 ### Module 3 Testing Checklist
+
 ```
 ✓ Admin dashboard loads
 ✓ All KPIs display correctly
@@ -311,6 +350,24 @@ test('unauthorized user cannot access admin panel')
 ✓ No console errors
 ```
 
-### Estimated Timeline: 8-10 days
 
 ---
+
+### Estimated Timeline: 8-10 days
+
+
+---
+
+
+
+---
+
+## Estimated Timeline
+
+**Duration:** 8-10 days
+
+---
+
+## Navigation
+
+← [Module 2](./module-2.md) | [Module 4](./module-4.md) →
