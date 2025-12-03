@@ -1,23 +1,3 @@
-# Module 0: Initial Setup & Configuration
-
-**Duration:** 3-4 days  
-**Dependencies:** None  
-**Objective:** Set up development environment, Laravel project structure, and CI/CD pipeline
-
----
-
-## Development Principles
-
-1. **Complete Each Module Before Moving to Next**
-2. **Test Thoroughly After Each Module**
-3. **Document As You Build**
-4. **Commit Frequently with Descriptive Messages**
-5. **Review and Refactor Before Next Module**
-
----
-
-## Tasks Checklist
-
 ### GitHub Setup
 
 - [ ] Create organization: `GFZA-IOP`
@@ -41,9 +21,7 @@
 - [ ] Set up issue templates (Bug, Feature Request, Documentation)
 - [ ] Configure branch naming conventions
 
----
-
-## Module 0 Testing Checklist
+### Module 0 Testing Checklist
 
 ```
 ✓ Laravel app runs on local environment
@@ -59,14 +37,4 @@
 ✓ Documentation organized
 ```
 
----
-
-## Estimated Timeline
-
-**Duration:** 3-4 days
-
----
-
-## Next Module
-
-→ [Module 1: User Management & Employee Directory](./module-1.md)
+### Estimated Timeline: 3-4 days
