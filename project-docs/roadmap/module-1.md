@@ -1,32 +1,36 @@
-## MODULE 1: USER MANAGEMENT & EMPLOYEE DIRECTORY
+# Module 1: User Management & Employee Directory
 
-**Objective:** Create core user entity with employee data, departmental structure, and basic profile management.
+**Duration:** 5-7 days  
+**Dependencies:** Module 0  
+**Objective:** Create core user entity with employee data, departmental structure, and basic profile management
 
-**Dependencies:** Module 0
+---
 
-**Key Files to Create:**
-```
-Models:
-- User.php (extend default)
-- Department.php
-- Role.php
+## Key Files to Create
 
-Controllers:
-- EmployeeController.php
+### Models
+- `User.php` (extend default)
+- `Department.php`
+- `Role.php`
 
-Migrations:
+### Controllers
+- `EmployeeController.php`
+
+### Migrations
 - Create the departments table
 - Modify users table (add employee fields)
 
-Views/Components:
+### Views/Components
 - Employee Directory page
 - Employee profile card
 - Department list
-```
 
-### 1.1 Database Schema & Seeding
+---
 
-**Tasks:**
+## 1.1 Database Schema & Seeding
+
+### Tasks
+
 - [ ] Create `departments` migration
   - Columns: id, name, description, head_id, created_at, updated_at
 - [ ] Create `roles` migration & seed data (Admin, HR, MIS, Staff, Director)
@@ -37,7 +41,8 @@ Views/Components:
 - [ ] Create role and permission seeders
 - [ ] Test: Run migrations on fresh database
 
-**Testing:**
+### Testing
+
 ```bash
 php artisan migrate:fresh --seed
 php artisan tinker
@@ -45,9 +50,12 @@ php artisan tinker
 > App\Models\Department::all()
 ```
 
-### 1.2 User Model & Relationships
+---
 
-**Tasks:**
+## 1.2 User Model & Relationships
+
+### Tasks
+
 - [ ] Define User model relationships
   ```php
   - belongsTo(Department)
@@ -64,7 +72,8 @@ php artisan tinker
 - [ ] Create Department and Role models with relationships
 - [ ] Add model factories for testing users (10 staff, 2 HR, 2 MIS, 1 Admin)
 
-**Testing:**
+### Testing
+
 ```bash
 php artisan tinker
 > $user = User::with('roles', 'department')->first()
@@ -72,9 +81,12 @@ php artisan tinker
 > $user->hasPermission('view_memo')
 ```
 
-### 1.3 Employee Directory API Endpoints
+---
 
-**Tasks:**
+## 1.3 Employee Directory API Endpoints
+
+### Tasks
+
 - [ ] Create EmployeeController
 - [ ] Build API endpoints:
   - `GET /api/v1/employees` - List all with pagination
@@ -87,7 +99,8 @@ php artisan tinker
   - Admin sees all
 - [ ] Add filtering (department, floor, role)
 
-**Testing:**
+### Testing
+
 ```bash
 # Use Postman or Laravel's built-in testing
 GET /api/v1/employees
@@ -96,9 +109,12 @@ GET /api/v1/departments
 GET /api/v1/employees?department=1&floor=2
 ```
 
-### 1.4 Employee Directory UI Components
+---
 
-**Tasks:**
+## 1.4 Employee Directory UI Components
+
+### Tasks
+
 - [ ] Create Employee Directory page (React/Vue component)
   - Table with: name, email, department, floor, phone
   - Search bar
@@ -111,15 +127,19 @@ GET /api/v1/employees?department=1&floor=2
 - [ ] Implement sorting (name, department, floor)
 - [ ] Pagination (10, 25, 50 per page)
 
-**Testing:**
+### Testing
+
 - [ ] Manual test filtering by department
 - [ ] Search for employee by name
 - [ ] Click profile → modal appears
 - [ ] Mobile responsive check
 
-### 1.5 Module 1 Integration Testing
+---
 
-**Tasks:**
+## 1.5 Module 1 Integration Testing
+
+### Tasks
+
 - [ ] Test full user flow:
   - Create new user via seeder
   - Retrieve via API
@@ -130,7 +150,8 @@ GET /api/v1/employees?department=1&floor=2
 - [ ] Test API pagination
 - [ ] Test error handling (404, unauthorized)
 
-**Test Cases:**
+### Test Cases
+
 ```php
 // tests/Feature/EmployeeDirectoryTest.php
 test('staff can view employee directory')
@@ -141,7 +162,10 @@ test('department filter works')
 test('pagination works correctly')
 ```
 
-### Module 1 Testing Checklist
+---
+
+## Module 1 Testing Checklist
+
 ```
 ✓ Users table seeded with roles/departments
 ✓ Employee Directory page loads
@@ -157,6 +181,14 @@ test('pagination works correctly')
 ✓ Load time < 2 seconds
 ```
 
-### Estimated Timeline: 5-7 days
+---
+
+## Estimated Timeline
+
+**Duration:** 5-7 days
 
 ---
+
+## Navigation
+
+← [Module 0: Initial Setup](./module-0.md) | [Module 2: Authentication & Authorization](./module-2.md) →

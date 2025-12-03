@@ -1,10 +1,8 @@
-# GFZA IOP - Complete Development Roadmap
-## Industry-Standard Modular Development Plan
+# Module 0: Initial Setup & Configuration
 
-**Project**: GFZA Internal Operations Portal (IOP)  
-**Version**: 1.0  
-**Development Approach**: Modular, Test-Driven, Incremental  
-**Estimated Total Duration**: 12-16 weeks
+**Duration:** 3-4 days  
+**Dependencies:** None  
+**Objective:** Set up development environment, Laravel project structure, and CI/CD pipeline
 
 ---
 
@@ -16,7 +14,12 @@
 4. **Commit Frequently with Descriptive Messages**
 5. **Review and Refactor Before Next Module**
 
+---
+
+## Tasks Checklist
+
 ### GitHub Setup
+
 - [ ] Create organization: `GFZA-IOP`
 - [ ] Create main repository: `gfza-staff-portal`
 - [ ] Create branch protection rules on `main`
@@ -38,7 +41,10 @@
 - [ ] Set up issue templates (Bug, Feature Request, Documentation)
 - [ ] Configure branch naming conventions
 
-### Module 0 Testing Checklist
+---
+
+## Module 0 Testing Checklist
+
 ```
 ✓ Laravel app runs on local environment
 ✓ Database migrations successful
@@ -53,4 +59,14 @@
 ✓ Documentation organized
 ```
 
-### Estimated Timeline: 3-4 days
+---
+
+## Estimated Timeline
+
+**Duration:** 3-4 days
+
+---
+
+## Next Module
+
+→ [Module 1: User Management & Employee Directory](./module-1.md)

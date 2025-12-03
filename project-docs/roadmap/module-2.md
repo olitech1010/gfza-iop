@@ -1,11 +1,14 @@
+# Module 2: Authentication & Authorization
 
-## MODULE 2: AUTHENTICATION & AUTHORIZATION
-
+**Duration:** 6-8 days  
+**Dependencies:** Module 0, Module 1  
 **Objective:** Implement complete auth system with role-based dashboard redirects and session management.
 
-**Dependencies:** Module 0, Module 1
+---
 
-**Key Files:**
+
+
+
 ```
 Controllers:
 - AuthController.php
@@ -22,7 +25,11 @@ Views/Pages:
 - Reset Password page
 ```
 
+
+---
+
 ### 2.1 Laravel Authentication Setup
+
 
 **Tasks:**
 - [ ] Use Laravel Sanctum for API auth
@@ -52,7 +59,11 @@ Response:
 }
 ```
 
+
+---
+
 ### 2.2 Role-Based Access Control (RBAC)
+
 
 **Tasks:**
 - [ ] Create middleware: `CheckRole`
@@ -82,7 +93,11 @@ GET /api/v1/admin/users
 # Response: 200 OK
 ```
 
+
+---
+
 ### 2.3 Dashboard Redirect Logic
+
 
 **Tasks:**
 - [ ] Create DashboardController::show()
@@ -123,7 +138,11 @@ If no permission: redirect to staff dashboard
 # Login with invalid credentials → show error message
 ```
 
+
+---
+
 ### 2.4 Login & Authentication Pages
+
 
 **Tasks:**
 - [ ] Create Login page component (React/Vue)
@@ -158,7 +177,11 @@ If no permission: redirect to staff dashboard
 - [ ] Reset password token works
 - [ ] Mobile responsive
 
+
+---
+
 ### 2.5 Session & Token Management
+
 
 **Tasks:**
 - [ ] Implement token expiration (24 hours)
@@ -194,7 +217,11 @@ public function login(Request $request)
 }
 ```
 
+
+---
+
 ### 2.6 Email Verification (Optional for Phase 1)
+
 
 **Tasks:**
 - [ ] Create email verification migration
@@ -203,7 +230,11 @@ public function login(Request $request)
 - [ ] Mark user as verified after clicking link
 - [ ] Block login until email verified (configurable)
 
+
+---
+
 ### 2.7 Module 2 Integration Testing
+
 
 **Test Cases:**
 ```php
@@ -230,7 +261,11 @@ test('unauthorized user cannot access admin routes')
 - [ ] Test token expiration
 - [ ] Mobile login experience
 
+
+---
+
 ### Module 2 Testing Checklist
+
 ```
 ✓ Login page loads correctly
 ✓ Login with correct credentials works
@@ -249,6 +284,24 @@ test('unauthorized user cannot access admin routes')
 ✓ No console errors
 ```
 
-### Estimated Timeline: 6-8 days
 
 ---
+
+### Estimated Timeline: 6-8 days
+
+
+---
+
+
+
+---
+
+## Estimated Timeline
+
+**Duration:** 6-8 days
+
+---
+
+## Navigation
+
+← [Module 1](./module-1.md) | [Module 3](./module-3.md) →
