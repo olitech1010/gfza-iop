@@ -21,6 +21,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'department_id',
+        'floor',
+        'phone',
+        'profile_picture_url',
+        'is_active',
     ];
 
     /**
@@ -43,6 +48,27 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function roles(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole(string $roleSlug): bool
+    {
+        return $this->roles->contains('slug', $roleSlug);
+    }
+
+    public function hasPermission(string $permissionSlug): bool
+    {
+        return $this->roles->flatMap->permissions->contains('slug', $permissionSlug);
     }
 }
