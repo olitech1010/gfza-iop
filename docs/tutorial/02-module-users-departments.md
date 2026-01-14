@@ -32,5 +32,31 @@ This created `app/Filament/Resources/DepartmentResource.php`. We then configured
 - **Form**: Added text inputs for `name` and `code`.
 - **Table**: Added columns to display `name`, `code`, and creation date.
 
-## 2. Next Steps
-The next commit will update the **User** model to link it to these Departments, and create the **User Resource** so admins can manage staff.
+
+## 3. User Management
+With departments in place, we configured the `User` model to belong to a department.
+
+### Step 3.1: Update User Model
+We added the `department_id` and other profile fields to the `$fillable` array in `app/Models/User.php`.
+We also defined the relationship:
+```php
+public function department()
+{
+    return $this->belongsTo(Department::class);
+}
+```
+
+### Step 3.2: Create User Resource
+We ran:
+```bash
+php artisan make:filament-resource User --generate
+```
+This inspected the `users` table and automatically guessed the fields.
+
+### Step 3.3: Customize User Resource
+The auto-generated form was a bit messy, so we organized it into Sections in `app/Filament/Resources/UserResource.php`:
+- **Personal Info**: Names (First, Middle, Last).
+- **Employment Details**: Staff ID, Job Title, and Department (Dropdown).
+- **Security**: Email, Password (only required on create), and Active Status.
+
+We also updated the table to show the **Department Name** instead of the ID using dot notation: `Tables\Columns\TextColumn::make('department.name')`.
