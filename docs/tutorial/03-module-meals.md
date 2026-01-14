@@ -61,5 +61,28 @@ We customized `ServedMealResource.php`:
     *   **Max Orders**: Optional limit for stock availability.
 - **Table**: Shows Date (formatted D, d M Y) and Meal Name.
 
-## 3. Next Steps
-We will create the **MealOrder** model to allow staff to actually place their daily requests.
+
+## 3. Meal Orders
+This resource allows admins to view and manage orders placed by staff.
+
+### Step 3.1: Create Model
+`php artisan make:model MealOrder`
+
+We updated `app/Models/MealOrder.php` with relations to `User` and `ServedMeal`.
+
+### Step 3.2: Create Resource
+`php artisan make:filament-resource MealOrder --generate`
+
+We customized `MealOrderResource.php` to provide a clear overview:
+- **Navigation**: "Meal Management" -> "Staff Orders".
+- **Form**:
+    *   **User Select**: Pick a staff member.
+    *   **Meal Select**: We customized the label to show "Date - Meal Name" so it's clear what is being ordered.
+    *   **Status**: A dropdown (Ordered, Collected, Cancelled).
+- **Table**: Shows Staff Name, Date, Meal Name, and Color-coded Status.
+
+## 4. Conclusion
+We now have a fully functional Meal Management system backend:
+1.  Define the food (Meal Items).
+2.  Schedule the food (Daily Menu).
+3.  Track the orders (Staff Orders).
