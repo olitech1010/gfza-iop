@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -25,9 +27,27 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Personal Info')
                     ->schema([
-                        Forms\Components\TextInput::make('first_name')->required(),
+                        Forms\Components\TextInput::make('first_name')
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                                if (($get('name') ?? '') !== trim(($old ?? '') . ' ' . ($get('last_name') ?? ''))) {
+                                    return;
+                                }
+
+                                $set('name', trim($state . ' ' . ($get('last_name') ?? '')));
+                            }),
                         Forms\Components\TextInput::make('middle_name'),
-                        Forms\Components\TextInput::make('last_name')->required(),
+                        Forms\Components\TextInput::make('last_name')
+                            ->required()
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
+                                if (($get('name') ?? '') !== trim(($get('first_name') ?? '') . ' ' . ($old ?? ''))) {
+                                    return;
+                                }
+
+                                $set('name', trim(($get('first_name') ?? '') . ' ' . $state));
+                            }),
                         Forms\Components\TextInput::make('name')
                             ->label('Display Name (Auto-filled)')
                             ->helperText('Will be auto-generated from First + Last if left empty')
