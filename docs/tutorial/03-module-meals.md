@@ -35,5 +35,31 @@ We customized the `MealItemResource.php` to include:
 - **Image Upload**: Configured `FileUpload` to store images in the `meals` directory.
 - **Toggle**: For the `is_active` status.
 
-## 2. Next Steps
-We will creating the **ServedMeal** model to allow the Admin (or Kitchen Manager) to schedule these meal items for specific dates.
+
+## 2. Served Meals (Daily Menu)
+This resource allows the kitchen to schedule *what* is being served on *which* days.
+
+### Step 2.1: Create Model
+`php artisan make:model ServedMeal`
+
+We updated `app/Models/ServedMeal.php` to link back to the `MealItem`:
+```php
+public function mealItem()
+{
+    return $this->belongsTo(MealItem::class);
+}
+```
+
+### Step 2.2: Create Resource
+`php artisan make:filament-resource ServedMeal --generate`
+
+We customized `ServedMealResource.php`:
+- **Navigation**: Grouped under "Meal Management" and labeled "Daily Menu".
+- **Form**:
+    *   **Date Picker**: Formatted nicely.
+    *   **Meal Select**: A dropdown searching `mealItem` by name.
+    *   **Max Orders**: Optional limit for stock availability.
+- **Table**: Shows Date (formatted D, d M Y) and Meal Name.
+
+## 3. Next Steps
+We will create the **MealOrder** model to allow staff to actually place their daily requests.
