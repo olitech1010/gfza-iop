@@ -15,4 +15,14 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+        chunkSizeWarningLimit: 500,
+        minify: 'esbuild',
+        cssMinify: true,
+    },
 });

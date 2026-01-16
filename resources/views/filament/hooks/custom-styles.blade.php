@@ -1,7 +1,9 @@
+<!-- Preload and load fonts with non-blocking strategy -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-    /* Import Poppins font */
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
     /* Apply Poppins font globally */
     body, .fi-body {
         font-family: 'Poppins', sans-serif !important;
