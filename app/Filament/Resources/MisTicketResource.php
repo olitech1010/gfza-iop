@@ -18,6 +18,7 @@ class MisTicketResource extends Resource
     protected static ?string $model = MisTicket::class;
 
     protected static ?string $navigationGroup = 'MIS Support';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     public static function form(Form $form): Form
     {

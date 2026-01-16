@@ -17,7 +17,8 @@ class MemoResource extends Resource
 {
     protected static ?string $model = Memo::class;
 
-    protected static ?string $navigationGroup = 'HR Management';
+    protected static ?string $navigationGroup = 'HR Operations';
+    protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     public static function form(Form $form): Form
     {

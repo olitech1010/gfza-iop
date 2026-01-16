@@ -26,10 +26,18 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login() // Using Filament's default login 
             ->colors([
-                'primary' => '#00c73f',
+                'primary' => Color::hex('#00c73f'),
             ])
+            ->font('Poppins')
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('3rem')
+            ->favicon(asset('images/logo.png'))
+            ->renderHook(
+                'panels::body.start',
+                fn () => view('filament.hooks.custom-styles')
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -37,8 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Removed default Filament widgets to avoid branding conflicts
             ])
             ->middleware([
                 EncryptCookies::class,

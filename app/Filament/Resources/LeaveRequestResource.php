@@ -15,7 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeaveRequestResource extends Resource
 {
-    protected static ?string $navigationGroup = 'HR Management';
+    protected static ?string $navigationGroup = 'HR Operations';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
     protected static ?string $navigationLabel = 'Leave Requests';
 
     public static function form(Form $form): Form
