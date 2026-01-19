@@ -94,6 +94,19 @@ class WeeklyMenuResource extends Resource
                             ->default('draft')
                             ->required()
                             ->native(false),
+
+                        Forms\Components\CheckboxList::make('available_days')
+                            ->label('Available Days')
+                            ->options([
+                                'monday' => 'Monday',
+                                'tuesday' => 'Tuesday',
+                                'wednesday' => 'Wednesday',
+                                'thursday' => 'Thursday',
+                                'friday' => 'Friday',
+                            ])
+                            ->default(['monday', 'tuesday', 'wednesday', 'thursday', 'friday'])
+                            ->columns(5)
+                            ->helperText('Uncheck days that are holidays or not working days'),
                     ])
                     ->columns(2),
 

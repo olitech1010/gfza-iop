@@ -18,6 +18,7 @@ class WeeklyMenu extends Model
         'week_start',
         'week_end',
         'week_label',
+        'available_days',
         'status',
     ];
 
@@ -26,6 +27,7 @@ class WeeklyMenu extends Model
         return [
             'week_start' => 'date',
             'week_end' => 'date',
+            'available_days' => 'array',
         ];
     }
 
@@ -64,12 +66,36 @@ class WeeklyMenu extends Model
     }
 
     /**
-     * Get menu items grouped by day.
+     * Scope for current published menu (staff can select).
+     */
+    public function scopeCurrent(Builder $query): Builder
+    {
+        return $query->published()->forCurrentWeek();
+    }
+
+    /**
+     * Scope for past menus.
+     */
+    public function scopePast(Builder $query): Builder
+    {
+        return $query->where('week_end', '<', now());
+    }
+
+    /**
+     * Get available days or default to Mon-Fri.
+     */
+    public function getAvailableDaysListAttribute(): array
+    {
+        return $this->available_days ?? ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    }
+
+    /**
+     * Get menu items grouped by day (only available days).
      */
     public function getMenuByDay(): array
     {
         $grouped = [];
-        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+        $days = $this->available_days_list;
 
         foreach ($days as $day) {
             $grouped[$day] = $this->menuItems()
@@ -87,6 +113,22 @@ class WeeklyMenu extends Model
     public function getTotalRequestsAttribute(): int
     {
         return $this->requests()->count();
+    }
+
+    /**
+     * Get staff requests count (non-NSS).
+     */
+    public function getStaffRequestsCountAttribute(): int
+    {
+        return $this->requests()->where('is_nss', false)->count();
+    }
+
+    /**
+     * Get NSS requests count.
+     */
+    public function getNssRequestsCountAttribute(): int
+    {
+        return $this->requests()->where('is_nss', true)->count();
     }
 
     /**
@@ -109,5 +151,15 @@ class WeeklyMenu extends Model
             ->where('is_paid', false)
             ->where('is_nss', false)
             ->sum('amount_due');
+    }
+
+    /**
+     * Check if menu is current (can accept requests).
+     */
+    public function getIsCurrentAttribute(): bool
+    {
+        return $this->status === 'published'
+            && $this->week_start <= now()
+            && $this->week_end >= now();
     }
 }
