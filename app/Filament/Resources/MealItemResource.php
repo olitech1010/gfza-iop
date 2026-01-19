@@ -3,21 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MealItemResource\Pages;
-use App\Filament\Resources\MealItemResource\RelationManagers;
 use App\Models\MealItem;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MealItemResource extends Resource
 {
     protected static ?string $model = MealItem::class;
 
+    protected static ?string $navigationIcon = 'heroicon-o-cake';
+
     protected static ?string $navigationGroup = 'Meal Management';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

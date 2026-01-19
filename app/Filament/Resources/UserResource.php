@@ -3,17 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
@@ -33,22 +30,22 @@ class UserResource extends Resource
                             ->required()
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                                if (($get('name') ?? '') !== trim(($old ?? '') . ' ' . ($get('last_name') ?? ''))) {
+                                if (($get('name') ?? '') !== trim(($old ?? '').' '.($get('last_name') ?? ''))) {
                                     return;
                                 }
 
-                                $set('name', trim($state . ' ' . ($get('last_name') ?? '')));
+                                $set('name', trim($state.' '.($get('last_name') ?? '')));
                             }),
                         Forms\Components\TextInput::make('middle_name'),
                         Forms\Components\TextInput::make('last_name')
                             ->required()
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
-                                if (($get('name') ?? '') !== trim(($get('first_name') ?? '') . ' ' . ($old ?? ''))) {
+                                if (($get('name') ?? '') !== trim(($get('first_name') ?? '').' '.($old ?? ''))) {
                                     return;
                                 }
 
-                                $set('name', trim(($get('first_name') ?? '') . ' ' . $state));
+                                $set('name', trim(($get('first_name') ?? '').' '.$state));
                             }),
                         Forms\Components\TextInput::make('name')
                             ->label('Display Name (Auto-filled)')
@@ -74,6 +71,9 @@ class UserResource extends Resource
                             ->required(fn ($livewire) => $livewire instanceof Pages\CreateUser)
                             ->dehydrated(fn ($state) => filled($state)),
                         Forms\Components\Toggle::make('is_active')->default(true),
+                        Forms\Components\Toggle::make('is_nss')
+                            ->label('NSS Personnel')
+                            ->helperText('Check if this user is a National Service Person (exempt from meal payments)'),
                     ])->columns(2),
             ]);
     }
