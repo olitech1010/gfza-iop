@@ -34,8 +34,6 @@ class DailyMenu extends Page implements HasForms, HasTable
 
     protected static ?string $navigationLabel = 'Daily Menu & Serving';
 
-    protected static bool $shouldRegisterNavigation = false; // Hidden from nav
-
     protected static string $view = 'filament.pages.meals.daily-menu';
 
     public ?string $selectedDate = null;
