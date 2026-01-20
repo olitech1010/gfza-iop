@@ -36,6 +36,14 @@ class DailyMenu extends Page implements HasForms, HasTable
 
     protected static string $view = 'filament.pages.meals.daily-menu';
 
+    /**
+     * Restrict this page to HR managers and super admins only.
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'hr_manager']) ?? false;
+    }
+
     public ?string $selectedDate = null;
 
     public ?string $selectedDepartment = null;

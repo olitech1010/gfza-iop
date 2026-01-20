@@ -20,10 +20,20 @@ class LeaveRequestPolicy
 
     /**
      * Determine whether the user can view the model.
+     * Staff can only view their own leave requests.
      */
     public function view(User $user, LeaveRequest $leaveRequest): bool
     {
-        return $user->can('view_leave::request');
+        if (! $user->can('view_leave::request')) {
+            return false;
+        }
+
+        // Staff can only view their own leave requests
+        if ($user->hasRole('staff') && $leaveRequest->user_id !== $user->id) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -36,10 +46,20 @@ class LeaveRequestPolicy
 
     /**
      * Determine whether the user can update the model.
+     * Staff can only update their own leave requests.
      */
     public function update(User $user, LeaveRequest $leaveRequest): bool
     {
-        return $user->can('update_leave::request');
+        if (! $user->can('update_leave::request')) {
+            return false;
+        }
+
+        // Staff can only update their own leave requests
+        if ($user->hasRole('staff') && $leaveRequest->user_id !== $user->id) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

@@ -19,6 +19,14 @@ class MealSummary extends Page
 
     protected static string $view = 'filament.pages.meals.meal-summary';
 
+    /**
+     * Restrict this page to HR managers and super admins only.
+     */
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'hr_manager']) ?? false;
+    }
+
     public ?string $selectedWeek = null;
 
     public function mount(): void
