@@ -20,7 +20,7 @@ class WeeklyMenuResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
-    protected static ?string $navigationGroup = 'Meal Management';
+    protected static ?string $navigationGroup = 'Meals';
 
     protected static ?int $navigationSort = 1;
 

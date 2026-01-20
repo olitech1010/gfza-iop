@@ -3,21 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MemoResource\Pages;
-use App\Filament\Resources\MemoResource\RelationManagers;
 use App\Models\Memo;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MemoResource extends Resource
 {
     protected static ?string $model = Memo::class;
 
-    protected static ?string $navigationGroup = 'HR Operations';
+    protected static ?string $navigationGroup = 'HR';
+
     protected static ?string $navigationIcon = 'heroicon-o-envelope';
 
     public static function form(Form $form): Form
@@ -54,7 +52,7 @@ class MemoResource extends Resource
                 ])->columns(2),
 
                 Forms\Components\Section::make('Recipients')->schema([
-                     Forms\Components\Select::make('recipients')
+                    Forms\Components\Select::make('recipients')
                         ->relationship('recipients', 'name')
                         ->multiple()
                         ->preload()

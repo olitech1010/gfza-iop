@@ -14,7 +14,7 @@ class ServedMealResource extends Resource
 {
     protected static ?string $model = ServedMeal::class;
 
-    protected static ?string $navigationGroup = 'Meal Management';
+    protected static ?string $navigationGroup = 'Meals';
 
     protected static ?string $navigationLabel = 'Daily Menu';
 

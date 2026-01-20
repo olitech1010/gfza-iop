@@ -3,20 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaveRequestResource\Pages;
-use App\Filament\Resources\LeaveRequestResource\RelationManagers;
 use App\Models\LeaveRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LeaveRequestResource extends Resource
 {
-    protected static ?string $navigationGroup = 'HR Operations';
+    protected static ?string $navigationGroup = 'HR';
+
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+
     protected static ?string $navigationLabel = 'Leave Requests';
 
     public static function form(Form $form): Form
@@ -31,7 +30,7 @@ class LeaveRequestResource extends Resource
                         ->required()
                         ->searchable()
                         ->preload()
-                        ->disabled(fn () => !auth()->user()->job_title === 'HR'), // Only HR can change user, or maybe just purely auto
+                        ->disabled(fn () => ! auth()->user()->job_title === 'HR'), // Only HR can change user, or maybe just purely auto
                     Forms\Components\DatePicker::make('start_date')
                         ->required()
                         ->native(false)
@@ -40,14 +39,14 @@ class LeaveRequestResource extends Resource
                             return function (string $attribute, $value, \Closure $fail) use ($get) {
                                 $start = \Carbon\Carbon::parse($value);
                                 $user_id = $get('user_id') ?? auth()->id();
-                                
+
                                 // Check if user has leave in previous or next month
                                 $consecutive = \App\Models\LeaveRequest::where('user_id', $user_id)
                                     ->where('status', '!=', 'rejected')
                                     ->where(function ($query) use ($start) {
                                         $prevMonth = $start->copy()->subMonth();
                                         $nextMonth = $start->copy()->addMonth();
-                                        
+
                                         $query->whereMonth('start_date', $prevMonth->month)->whereYear('start_date', $prevMonth->year)
                                             ->orWhereMonth('end_date', $prevMonth->month)->whereYear('end_date', $prevMonth->year)
                                             ->orWhereMonth('start_date', $nextMonth->month)->whereYear('start_date', $nextMonth->year)
@@ -56,7 +55,7 @@ class LeaveRequestResource extends Resource
                                     ->exists();
 
                                 if ($consecutive) {
-                                    $fail("You cannot take leave in consecutive months.");
+                                    $fail('You cannot take leave in consecutive months.');
                                 }
                             };
                         }),
@@ -71,7 +70,7 @@ class LeaveRequestResource extends Resource
                                 $days = $start->diffInDays($end) + 1; // Inclusive
 
                                 if ($days > 18) {
-                                    $fail("You cannot request more than 18 days at a time.");
+                                    $fail('You cannot request more than 18 days at a time.');
                                 }
                             };
                         }),
@@ -86,7 +85,7 @@ class LeaveRequestResource extends Resource
                 ])->columns(2),
 
                 Forms\Components\Section::make('Status')->schema([
-                     Forms\Components\Select::make('status')
+                    Forms\Components\Select::make('status')
                         ->options([
                             'pending_dept_head' => 'Pending Dept Head',
                             'pending_hr' => 'Pending HR',
@@ -128,8 +127,7 @@ class LeaveRequestResource extends Resource
                 Tables\Actions\Action::make('approve')
                     ->color('success')
                     ->icon('heroicon-o-check')
-                    ->visible(fn (LeaveRequest $record) => 
-                        ($record->status === 'pending_dept_head' && auth()->user()->id !== $record->user_id) || // Add role check logic here
+                    ->visible(fn (LeaveRequest $record) => ($record->status === 'pending_dept_head' && auth()->user()->id !== $record->user_id) || // Add role check logic here
                         ($record->status === 'pending_hr' && auth()->user()->department?->code === 'HR')
                     )
                     ->action(function (LeaveRequest $record) {

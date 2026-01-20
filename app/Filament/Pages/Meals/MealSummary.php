@@ -11,7 +11,7 @@ class MealSummary extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
-    protected static ?string $navigationGroup = 'Meal Management';
+    protected static ?string $navigationGroup = 'Meals';
 
     protected static ?int $navigationSort = 6;
 

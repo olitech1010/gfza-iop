@@ -50,4 +50,29 @@
         border-color: #00c73f !important;
         --tw-ring-color: rgba(0, 199, 63, 0.2) !important;
     }
+    
+    /* Active navigation link styling - green background with white text */
+    .fi-sidebar-item-active > a,
+    .fi-sidebar-item-active > button {
+        background-color: #00c73f !important;
+        color: white !important;
+        border-radius: 0.5rem;
+    }
+    
+    .fi-sidebar-item-active > a:hover,
+    .fi-sidebar-item-active > button:hover {
+        background-color: #00b035 !important;
+    }
+    
+    .fi-sidebar-item-active .fi-sidebar-item-icon {
+        color: white !important;
+    }
+    
+    .fi-sidebar-item-active .fi-sidebar-item-label {
+        color: white !important;
+    }
+    
+    .fi-sidebar-item-active .fi-sidebar-item-active-indicator {
+        display: none !important;
+    }
 </style>

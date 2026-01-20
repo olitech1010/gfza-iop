@@ -17,7 +17,7 @@ class StaffMealSelection extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
-    protected static ?string $navigationGroup = 'Meal Management';
+    protected static ?string $navigationGroup = 'Meals';
 
     protected static ?int $navigationSort = 0;
 
