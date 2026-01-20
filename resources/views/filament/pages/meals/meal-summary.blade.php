@@ -25,9 +25,9 @@
             </div>
         </div>
 
-        {{-- Overview Stats --}}
+        {{-- Overview Stats - 3 per row --}}
         @php $stats = $this->getOverviewStats(); @endphp
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl shadow p-5 text-center text-white">
                 <p class="text-4xl font-bold">{{ $stats['total_meals'] }}</p>
                 <p class="text-sm opacity-90">Total Meals</p>
@@ -40,21 +40,19 @@
                 <p class="text-4xl font-bold">{{ $stats['total_nss'] }}</p>
                 <p class="text-sm opacity-90">NSS</p>
             </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow p-5 text-center text-white">
                 <p class="text-4xl font-bold">GHS {{ number_format($stats['total_paid'], 0) }}</p>
-                <p class="text-sm opacity-90">Paid</p>
+                <p class="text-sm opacity-90">Total Paid</p>
             </div>
             <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow p-5 text-center text-white">
                 <p class="text-4xl font-bold">GHS {{ number_format($stats['total_pending'], 0) }}</p>
-                <p class="text-sm opacity-90">Pending</p>
+                <p class="text-sm opacity-90">Pending Payment</p>
             </div>
             <div class="bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow p-5 text-center text-white">
-                <p class="text-4xl font-bold">{{ $stats['total_served'] }}</p>
-                <p class="text-sm opacity-90">Served</p>
-            </div>
-            <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow p-5 text-center text-white">
-                <p class="text-4xl font-bold">{{ $stats['total_unserved'] }}</p>
-                <p class="text-sm opacity-90">Pending Serve</p>
+                <p class="text-4xl font-bold">{{ $stats['total_served'] }} / {{ $stats['total_unserved'] }}</p>
+                <p class="text-sm opacity-90">Served / Pending</p>
             </div>
         </div>
 
