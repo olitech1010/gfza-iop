@@ -28,7 +28,7 @@ class DailyMenu extends Page implements HasForms, HasTable
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Meals';
+    protected static ?string $navigationGroup = 'Meal Management';
 
     protected static ?int $navigationSort = 5;
 

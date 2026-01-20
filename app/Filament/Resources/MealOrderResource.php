@@ -14,7 +14,7 @@ class MealOrderResource extends Resource
 {
     protected static ?string $model = MealOrder::class;
 
-    protected static ?string $navigationGroup = 'HR';
+    protected static ?string $navigationGroup = 'HR Operations';
 
     protected static ?string $navigationIcon = 'heroicon-o-cake';
 

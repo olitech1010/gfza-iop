@@ -37,13 +37,13 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/logo.png'))
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Settings'),
+                    ->label('Settings & Admin'),
                 NavigationGroup::make()
-                    ->label('HR'),
+                    ->label('HR Operations'),
                 NavigationGroup::make()
-                    ->label('Meals'),
+                    ->label('Meal Management'),
                 NavigationGroup::make()
-                    ->label('MIS'),
+                    ->label('MIS Support'),
                 NavigationGroup::make()
                     ->label('Facilities'),
             ])

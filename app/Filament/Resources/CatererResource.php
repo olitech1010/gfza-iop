@@ -16,7 +16,7 @@ class CatererResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
-    protected static ?string $navigationGroup = 'Meals';
+    protected static ?string $navigationGroup = 'Meal Management';
 
     protected static ?int $navigationSort = 4;
 

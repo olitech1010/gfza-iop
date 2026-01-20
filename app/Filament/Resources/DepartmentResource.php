@@ -14,7 +14,7 @@ class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'Settings & Admin';
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
 

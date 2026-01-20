@@ -19,7 +19,7 @@ class MealRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Meals';
+    protected static ?string $navigationGroup = 'Meal Management';
 
     protected static ?int $navigationSort = 2;
 

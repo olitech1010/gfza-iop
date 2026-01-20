@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 
 class LeaveRequestResource extends Resource
 {
-    protected static ?string $navigationGroup = 'HR';
+    protected static ?string $navigationGroup = 'HR Operations';
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 

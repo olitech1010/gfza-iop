@@ -14,7 +14,7 @@ class MisAssetResource extends Resource
 {
     protected static ?string $model = MisAsset::class;
 
-    protected static ?string $navigationGroup = 'MIS';
+    protected static ?string $navigationGroup = 'MIS Support';
 
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
