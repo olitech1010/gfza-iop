@@ -70,6 +70,12 @@ class UserResource extends Resource
                             ->password()
                             ->required(fn ($livewire) => $livewire instanceof Pages\CreateUser)
                             ->dehydrated(fn ($state) => filled($state)),
+                        Forms\Components\Select::make('roles')
+                            ->relationship('roles', 'name')
+                            ->multiple()
+                            ->preload()
+                            ->searchable()
+                            ->label('Assign Roles'),
                         Forms\Components\Toggle::make('is_active')->default(true),
                         Forms\Components\Toggle::make('is_nss')
                             ->label('NSS Personnel')
@@ -88,6 +94,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('department.name')->sortable(),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Roles')
+                    ->badge()
+                    ->separator(','),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([

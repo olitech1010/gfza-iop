@@ -93,3 +93,5 @@ class RoomBooking extends Model
         }
     }
 }
+
+
