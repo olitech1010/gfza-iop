@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Models\Location;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -55,7 +56,11 @@ class UserResource extends Resource
 
                 Forms\Components\Section::make('Employment Details')
                     ->schema([
-                        Forms\Components\TextInput::make('staff_id')->label('Staff ID')->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('staff_id')
+                            ->label('Staff ID')
+                            ->helperText('Auto-generated on creation')
+                            ->disabled()
+                            ->dehydrated(false),
                         Forms\Components\TextInput::make('job_title'),
                         Forms\Components\Select::make('department_id')
                             ->relationship('department', 'name')
@@ -63,9 +68,39 @@ class UserResource extends Resource
                             ->preload(),
                     ])->columns(3),
 
+                Forms\Components\Section::make('Contact & Location')
+                    ->schema([
+                        Forms\Components\TextInput::make('phone')
+                            ->label('Phone Number')
+                            ->tel()
+                            ->regex('/^[0-9]{10}$/')
+                            ->validationMessages([
+                                'regex' => 'Phone number must be exactly 10 digits.',
+                            ])
+                            ->placeholder('0241234567'),
+                        Forms\Components\Select::make('location_id')
+                            ->relationship('location', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->unique(Location::class, 'name')
+                                    ->label('Location Name'),
+                            ])
+                            ->createOptionUsing(function (array $data): int {
+                                return Location::create($data)->getKey();
+                            }),
+                    ])->columns(2),
+
                 Forms\Components\Section::make('Account Security')
                     ->schema([
-                        Forms\Components\TextInput::make('email')->email()->required()->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->helperText('Auto-generated from First + Last name on creation')
+                            ->disabled(fn ($livewire) => $livewire instanceof Pages\CreateUser)
+                            ->dehydrated(fn ($livewire) => ! ($livewire instanceof Pages\CreateUser))
+                            ->unique(ignoreRecord: true),
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->required(fn ($livewire) => $livewire instanceof Pages\CreateUser)
@@ -90,9 +125,11 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('staff_id')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('name')->label('Full Name')->searchable(['first_name', 'last_name', 'name']),
-                Tables\Columns\TextColumn::make('job_title')->searchable(),
+                Tables\Columns\TextColumn::make('job_title')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('department.name')->sortable(),
-                Tables\Columns\TextColumn::make('email')->searchable(),
+                Tables\Columns\TextColumn::make('phone')->label('Phone')->searchable(),
+                Tables\Columns\TextColumn::make('location.name')->label('Location')->sortable(),
+                Tables\Columns\TextColumn::make('email')->searchable()->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label('Roles')

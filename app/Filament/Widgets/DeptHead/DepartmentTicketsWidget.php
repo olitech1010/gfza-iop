@@ -27,18 +27,18 @@ class DepartmentTicketsWidget extends Widget
         $departmentId = $user->department_id;
 
         // Get recent tickets from department
-        $recentTickets = MisTicket::whereHas('user', function ($query) use ($departmentId) {
+        $recentTickets = MisTicket::whereHas('requester', function ($query) use ($departmentId) {
             $query->where('department_id', $departmentId);
         })
-            ->with('user')
+            ->with('requester')
             ->latest()
             ->take(5)
             ->get()
             ->map(function ($ticket) {
                 return [
                     'id' => $ticket->id,
-                    'title' => $ticket->title ?? $ticket->issue_description ?? 'Ticket #' . $ticket->id,
-                    'userName' => $ticket->user?->name ?? 'Unknown',
+                    'title' => $ticket->subject ?? 'Ticket #'.$ticket->id,
+                    'userName' => $ticket->requester?->name ?? 'Unknown',
                     'status' => $ticket->status,
                     'statusColor' => $this->getStatusColor($ticket->status),
                     'statusLabel' => $this->getStatusLabel($ticket->status),

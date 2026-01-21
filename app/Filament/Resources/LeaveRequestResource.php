@@ -4,8 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaveRequestResource\Pages;
 use App\Models\LeaveRequest;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,18 +33,23 @@ class LeaveRequestResource extends Resource
                         ->required()
                         ->searchable()
                         ->preload()
-                        ->disabled(fn () => ! auth()->user()->job_title === 'HR'), // Only HR can change user, or maybe just purely auto
+                        ->hidden(fn () => ! auth()->user()->hasAnyRole(['super_admin', 'hr_manager']))
+                        ->dehydrated(),
                     Forms\Components\DatePicker::make('start_date')
                         ->required()
                         ->native(false)
                         ->afterOrEqual('today')
+                        ->live()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::calculateDays($get, $set);
+                        })
                         ->rule(function (Forms\Get $get) {
                             return function (string $attribute, $value, \Closure $fail) use ($get) {
-                                $start = \Carbon\Carbon::parse($value);
+                                $start = Carbon::parse($value);
                                 $user_id = $get('user_id') ?? auth()->id();
 
                                 // Check if user has leave in previous or next month
-                                $consecutive = \App\Models\LeaveRequest::where('user_id', $user_id)
+                                $consecutive = LeaveRequest::where('user_id', $user_id)
                                     ->where('status', '!=', 'rejected')
                                     ->where(function ($query) use ($start) {
                                         $prevMonth = $start->copy()->subMonth();
@@ -62,11 +70,15 @@ class LeaveRequestResource extends Resource
                     Forms\Components\DatePicker::make('end_date')
                         ->required()
                         ->native(false)
-                        ->after('start_date')
+                        ->afterOrEqual('start_date')
+                        ->live()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::calculateDays($get, $set);
+                        })
                         ->rule(function (Forms\Get $get) {
                             return function (string $attribute, $value, \Closure $fail) use ($get) {
-                                $start = \Carbon\Carbon::parse($get('start_date'));
-                                $end = \Carbon\Carbon::parse($value);
+                                $start = Carbon::parse($get('start_date'));
+                                $end = Carbon::parse($value);
                                 $days = $start->diffInDays($end) + 1; // Inclusive
 
                                 if ($days > 18) {
@@ -77,8 +89,9 @@ class LeaveRequestResource extends Resource
                     Forms\Components\TextInput::make('days_requested')
                         ->numeric()
                         ->disabled()
-                        ->dehydrated() // Ensure it saves
-                        ->default(0), // Would ideally auto-calc via JS/Livewire lifecycle
+                        ->dehydrated()
+                        ->default(0)
+                        ->helperText('Auto-calculated from date range'),
                     Forms\Components\Textarea::make('reason')
                         ->required()
                         ->columnSpanFull(),
@@ -127,8 +140,12 @@ class LeaveRequestResource extends Resource
                 Tables\Actions\Action::make('approve')
                     ->color('success')
                     ->icon('heroicon-o-check')
-                    ->visible(fn (LeaveRequest $record) => ($record->status === 'pending_dept_head' && auth()->user()->id !== $record->user_id) || // Add role check logic here
-                        ($record->status === 'pending_hr' && auth()->user()->department?->code === 'HR')
+                    ->visible(fn (LeaveRequest $record) =>
+                        // Cannot approve own requests
+                        $record->user_id !== auth()->id() &&
+                        // Must be in approvable status and have correct role
+                        (($record->status === 'pending_dept_head' && auth()->user()->hasAnyRole(['super_admin', 'dept_head'])) ||
+                         ($record->status === 'pending_hr' && auth()->user()->hasAnyRole(['super_admin', 'hr_manager'])))
                     )
                     ->action(function (LeaveRequest $record) {
                         if ($record->status === 'pending_dept_head') {
@@ -152,14 +169,25 @@ class LeaveRequestResource extends Resource
                     ->form([
                         Forms\Components\Textarea::make('rejection_reason')->required(),
                     ])
-                    ->visible(fn (LeaveRequest $record) => in_array($record->status, ['pending_dept_head', 'pending_hr']))
+                    ->visible(fn (LeaveRequest $record) =>
+                        // Cannot reject own requests
+                        $record->user_id !== auth()->id() &&
+                        // Must be in pending status and have correct role
+                        in_array($record->status, ['pending_dept_head', 'pending_hr']) &&
+                        auth()->user()->hasAnyRole(['super_admin', 'hr_manager', 'dept_head'])
+                    )
                     ->action(function (LeaveRequest $record, array $data) {
                         $record->update([
                             'status' => 'rejected',
                             'rejection_reason' => $data['rejection_reason'],
                         ]);
                     }),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (LeaveRequest $record) =>
+                        // Can only edit own pending requests
+                        $record->user_id === auth()->id() && $record->status === 'pending_dept_head'
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -182,5 +210,24 @@ class LeaveRequestResource extends Resource
             'create' => Pages\CreateLeaveRequest::route('/create'),
             'edit' => Pages\EditLeaveRequest::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Calculate days between start and end date (inclusive)
+     */
+    public static function calculateDays(Get $get, Set $set): void
+    {
+        $startDate = $get('start_date');
+        $endDate = $get('end_date');
+
+        if ($startDate && $endDate) {
+            $start = Carbon::parse($startDate);
+            $end = Carbon::parse($endDate);
+
+            if ($end->gte($start)) {
+                $days = $start->diffInDays($end) + 1; // +1 for inclusive
+                $set('days_requested', $days);
+            }
+        }
     }
 }

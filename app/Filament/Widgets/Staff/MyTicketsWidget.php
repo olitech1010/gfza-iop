@@ -26,7 +26,7 @@ class MyTicketsWidget extends Widget
             ->map(function ($ticket) {
                 return [
                     'id' => $ticket->id,
-                    'title' => $ticket->title ?? $ticket->issue_description ?? 'Ticket #' . $ticket->id,
+                    'title' => $ticket->subject ?? 'Ticket #'.$ticket->id,
                     'status' => $ticket->status,
                     'statusColor' => $this->getStatusColor($ticket->status),
                     'created_at' => $ticket->created_at?->diffForHumans(),

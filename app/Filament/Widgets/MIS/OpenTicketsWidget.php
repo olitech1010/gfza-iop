@@ -25,16 +25,16 @@ class OpenTicketsWidget extends Widget
     {
         // Get open tickets needing attention
         $openTickets = MisTicket::where('status', 'open')
-            ->with(['user', 'user.department'])
+            ->with(['requester', 'requester.department'])
             ->oldest()
             ->take(5)
             ->get()
             ->map(function ($ticket) {
                 return [
                     'id' => $ticket->id,
-                    'title' => $ticket->title ?? $ticket->issue_description ?? 'Ticket #' . $ticket->id,
-                    'userName' => $ticket->user?->name ?? 'Unknown',
-                    'department' => $ticket->user?->department?->name ?? 'N/A',
+                    'title' => $ticket->subject ?? 'Ticket #'.$ticket->id,
+                    'userName' => $ticket->requester?->name ?? 'Unknown',
+                    'department' => $ticket->requester?->department?->name ?? 'N/A',
                     'createdAt' => $ticket->created_at?->diffForHumans(),
                     'priority' => $ticket->priority ?? 'normal',
                 ];

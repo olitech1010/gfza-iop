@@ -3,9 +3,7 @@
 namespace App\Filament\Widgets\Admin;
 
 use App\Models\Department;
-use App\Models\MisAsset;
 use App\Models\MisTicket;
-use App\Models\RoomBooking;
 use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +12,7 @@ class SystemOverviewWidget extends Widget
 {
     protected static string $view = 'filament.widgets.admin.system-overview-widget';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 2;
 
     protected static ?int $sort = 5;
 
@@ -30,34 +28,36 @@ class SystemOverviewWidget extends Widget
         return [
             'stats' => [
                 [
-                    'label' => 'Total Users',
+                    'label' => 'Total Staff',
                     'value' => User::count(),
                     'color' => '#00c73f',
-                    'icon' => 'users',
+                    'bgColor' => '#E6F4EA',
                 ],
                 [
                     'label' => 'Departments',
                     'value' => Department::count(),
-                    'color' => '#3B82F6',
-                    'icon' => 'building',
+                    'color' => '#1a73e8',
+                    'bgColor' => '#E8F0FE',
                 ],
                 [
                     'label' => 'Open Tickets',
-                    'value' => MisTicket::whereIn('status', ['open', 'in_progress'])->count(),
-                    'color' => '#F59E0B',
-                    'icon' => 'ticket',
+                    'value' => MisTicket::where('status', 'open')->count(),
+                    'color' => '#ea4335',
+                    'bgColor' => '#FDECEA',
                 ],
                 [
-                    'label' => 'Total Assets',
-                    'value' => MisAsset::count(),
-                    'color' => '#8B5CF6',
-                    'icon' => 'computer',
+                    'label' => 'In Progress',
+                    'value' => MisTicket::where('status', 'in_progress')->count(),
+                    'color' => '#e65100',
+                    'bgColor' => '#FFF4E5',
                 ],
                 [
-                    'label' => 'Today\'s Bookings',
-                    'value' => RoomBooking::whereDate('start_time', today())->count(),
-                    'color' => '#EC4899',
-                    'icon' => 'calendar',
+                    'label' => 'Resolved Today',
+                    'value' => MisTicket::where('status', 'resolved')
+                        ->whereDate('resolved_at', today())
+                        ->count(),
+                    'color' => '#34a853',
+                    'bgColor' => '#E6F4EA',
                 ],
             ],
         ];
