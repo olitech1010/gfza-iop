@@ -45,7 +45,7 @@ class DepartmentStatsWidget extends Widget
             ->count();
 
         // Open tickets from department
-        $openTickets = MisTicket::whereHas('user', function ($query) use ($departmentId) {
+        $openTickets = MisTicket::whereHas('requester', function ($query) use ($departmentId) {
             $query->where('department_id', $departmentId);
         })
             ->whereIn('status', ['open', 'in_progress'])

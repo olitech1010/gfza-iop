@@ -4,7 +4,7 @@
             <div>
                 <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">{{ $currentDate }}</p>
                 <h2 class="text-gray-900 dark:text-white text-2xl font-bold mt-1">
-                    {{ $greeting }}, {{ $userName }}! 👋
+                    {{ $greeting }}, {{ $userName }}
                 </h2>
                 <div class="mt-2">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold" 

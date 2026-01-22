@@ -24,9 +24,9 @@ class AssetOverviewWidget extends Widget
     public function getViewData(): array
     {
         $totalAssets = MisAsset::count();
-        $assignedAssets = MisAsset::whereNotNull('assigned_to')->count();
-        $availableAssets = MisAsset::whereNull('assigned_to')->count();
-        $underMaintenance = MisAsset::where('condition', 'maintenance')->count();
+        $assignedAssets = MisAsset::whereNotNull('assigned_to_user_id')->count();
+        $availableAssets = MisAsset::whereNull('assigned_to_user_id')->count();
+        $underMaintenance = MisAsset::where('status', 'maintenance')->count();
 
         return [
             'totalAssets' => $totalAssets,

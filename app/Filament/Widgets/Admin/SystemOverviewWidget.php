@@ -12,7 +12,7 @@ class SystemOverviewWidget extends Widget
 {
     protected static string $view = 'filament.widgets.admin.system-overview-widget';
 
-    protected int|string|array $columnSpan = 2;
+    protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 5;
 
