@@ -18,7 +18,7 @@ class PendingLeaveApprovalsWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['dept_head', 'super_admin']);
+        return $user?->hasRole('dept_head');
     }
 
     public function getViewData(): array

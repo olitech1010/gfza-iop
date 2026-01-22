@@ -13,7 +13,7 @@ class TodaysMealWidget extends Widget
 
     protected int|string|array $columnSpan = 1;
 
-    protected static ?int $sort = 10;
+    protected static ?int $sort = 9;
 
     public function getViewData(): array
     {

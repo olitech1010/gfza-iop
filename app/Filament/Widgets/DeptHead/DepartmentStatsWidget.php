@@ -2,9 +2,9 @@
 
 namespace App\Filament\Widgets\DeptHead;
 
-use App\Models\User;
 use App\Models\LeaveRequest;
 use App\Models\MisTicket;
+use App\Models\User;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +20,7 @@ class DepartmentStatsWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['dept_head', 'super_admin']);
+        return $user?->hasRole('dept_head');
     }
 
     public function getViewData(): array

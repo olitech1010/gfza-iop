@@ -19,7 +19,7 @@ class TodaysMealSummaryWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['hr_manager', 'super_admin']);
+        return $user?->hasRole('hr_manager');
     }
 
     public function getViewData(): array
@@ -52,8 +52,8 @@ class TodaysMealSummaryWidget extends Widget
 
             // Breakdown by meal item
             $mealBreakdown = $todaysRequests
-                ->groupBy(fn($req) => $req->weeklyMenuItem?->mealItem?->name ?? 'Unknown')
-                ->map(fn($group) => $group->count())
+                ->groupBy(fn ($req) => $req->weeklyMenuItem?->mealItem?->name ?? 'Unknown')
+                ->map(fn ($group) => $group->count())
                 ->sortDesc()
                 ->take(5);
         }

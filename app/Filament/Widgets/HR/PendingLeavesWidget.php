@@ -18,7 +18,7 @@ class PendingLeavesWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['hr_manager', 'super_admin']);
+        return $user?->hasRole('hr_manager');
     }
 
     public function getViewData(): array

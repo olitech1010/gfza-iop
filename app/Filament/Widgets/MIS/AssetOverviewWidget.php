@@ -18,7 +18,7 @@ class AssetOverviewWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['mis_support', 'super_admin']);
+        return $user?->hasRole('mis_support');
     }
 
     public function getViewData(): array

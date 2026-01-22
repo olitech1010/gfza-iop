@@ -18,7 +18,7 @@ class RecentMemosWidget extends Widget
     {
         $user = Auth::user();
 
-        return $user?->hasRole(['hr_manager', 'super_admin']);
+        return $user?->hasRole('hr_manager');
     }
 
     public function getViewData(): array
@@ -34,7 +34,7 @@ class RecentMemosWidget extends Widget
 
                 return [
                     'id' => $memo->id,
-                    'subject' => $memo->subject ?? $memo->title ?? 'Memo #' . $memo->id,
+                    'subject' => $memo->subject ?? $memo->title ?? 'Memo #'.$memo->id,
                     'createdAt' => $memo->created_at?->diffForHumans(),
                     'totalRecipients' => $totalRecipients,
                     'readCount' => $readCount,
