@@ -12,6 +12,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeaveRequestResource extends Resource
 {
@@ -201,6 +202,19 @@ class LeaveRequestResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // Staff and MIS support can only see their own leave requests
+        if (auth()->user()->hasRole(['staff', 'mis_support'])) {
+            return $query->where('user_id', auth()->id());
+        }
+
+        // HR, dept heads, and super admins see all leave requests
+        return $query;
     }
 
     public static function getPages(): array
