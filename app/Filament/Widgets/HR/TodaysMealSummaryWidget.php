@@ -17,9 +17,8 @@ class TodaysMealSummaryWidget extends Widget
 
     public static function canView(): bool
     {
-        $user = Auth::user();
-
-        return $user?->hasRole('hr_manager');
+        // Disabled - use TodaysMealWidget instead for HR dashboard
+        return false;
     }
 
     public function getViewData(): array

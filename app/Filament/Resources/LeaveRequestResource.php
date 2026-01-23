@@ -43,30 +43,6 @@ class LeaveRequestResource extends Resource
                         ->live()
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::calculateDays($get, $set);
-                        })
-                        ->rule(function (Forms\Get $get) {
-                            return function (string $attribute, $value, \Closure $fail) use ($get) {
-                                $start = Carbon::parse($value);
-                                $user_id = $get('user_id') ?? auth()->id();
-
-                                // Check if user has leave in previous or next month
-                                $consecutive = LeaveRequest::where('user_id', $user_id)
-                                    ->where('status', '!=', 'rejected')
-                                    ->where(function ($query) use ($start) {
-                                        $prevMonth = $start->copy()->subMonth();
-                                        $nextMonth = $start->copy()->addMonth();
-
-                                        $query->whereMonth('start_date', $prevMonth->month)->whereYear('start_date', $prevMonth->year)
-                                            ->orWhereMonth('end_date', $prevMonth->month)->whereYear('end_date', $prevMonth->year)
-                                            ->orWhereMonth('start_date', $nextMonth->month)->whereYear('start_date', $nextMonth->year)
-                                            ->orWhereMonth('end_date', $nextMonth->month)->whereYear('end_date', $nextMonth->year);
-                                    })
-                                    ->exists();
-
-                                if ($consecutive) {
-                                    $fail('You cannot take leave in consecutive months.');
-                                }
-                            };
                         }),
                     Forms\Components\DatePicker::make('end_date')
                         ->required()

@@ -11,9 +11,9 @@ class HrOverviewStatsWidget extends Widget
 {
     protected static string $view = 'filament.widgets.hr.hr-overview-stats-widget';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 6;
 
     public static function canView(): bool
     {
@@ -34,26 +34,26 @@ class HrOverviewStatsWidget extends Widget
                 [
                     'label' => 'Total Staff',
                     'value' => $totalStaff,
-                    'icon' => 'users',
                     'color' => '#00c73f',
+                    'bgColor' => '#E6F4EA',
                 ],
                 [
                     'label' => 'Active Staff',
                     'value' => $activeStaff,
-                    'icon' => 'user-check',
-                    'color' => '#3B82F6',
+                    'color' => '#1a73e8',
+                    'bgColor' => '#E8F0FE',
                 ],
                 [
                     'label' => 'NSS Personnel',
                     'value' => $nssPersonnel,
-                    'icon' => 'academic-cap',
-                    'color' => '#8B5CF6',
+                    'color' => '#7c3aed',
+                    'bgColor' => '#EDE7F6',
                 ],
                 [
                     'label' => 'Departments',
                     'value' => $departments,
-                    'icon' => 'building-office',
-                    'color' => '#F59E0B',
+                    'color' => '#e65100',
+                    'bgColor' => '#FFF4E5',
                 ],
             ],
         ];
