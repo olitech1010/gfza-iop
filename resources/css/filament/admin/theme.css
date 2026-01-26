@@ -12,3 +12,9 @@ body {
 .fi-sidebar-item-label {
     font-weight: 500;
 }
+
+/* Sidebar shadow and separation */
+.fi-sidebar {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
