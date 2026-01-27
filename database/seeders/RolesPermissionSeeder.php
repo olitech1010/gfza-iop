@@ -65,10 +65,21 @@ class RolesPermissionSeeder extends Seeder
         }
 
         // Assign permissions to roles
+        $this->assignSuperAdminPermissions();
         $this->assignHrManagerPermissions();
         $this->assignMisSupportPermissions();
         $this->assignDeptHeadPermissions();
         $this->assignStaffPermissions();
+    }
+
+    /**
+     * Super Admin: All permissions
+     */
+    protected function assignSuperAdminPermissions(): void
+    {
+        $role = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $allPermissions = Permission::pluck('name')->toArray();
+        $role->syncPermissions($allPermissions);
     }
 
     /**
