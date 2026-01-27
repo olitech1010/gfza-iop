@@ -7,8 +7,10 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -105,6 +107,9 @@ class User extends Authenticatable implements FilamentUser
         'location_id',
         'is_active',
         'is_nss',
+        'photo',
+        'nss_pin',
+        'qr_token',
     ];
 
     public function department(): BelongsTo
@@ -118,6 +123,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get all attendance records for this user.
+     */
+    public function nssAttendances(): HasMany
+    {
+        return $this->hasMany(NssAttendance::class);
+    }
+
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -125,6 +138,8 @@ class User extends Authenticatable implements FilamentUser
     protected $hidden = [
         'password',
         'remember_token',
+        'nss_pin',
+        'qr_token',
     ];
 
     /**
@@ -137,6 +152,62 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_nss' => 'boolean',
         ];
+    }
+
+    /**
+     * Set the NSS PIN attribute (auto-hash).
+     */
+    public function setNssPinAttribute(?string $value): void
+    {
+        if ($value && strlen($value) === 4 && ! str_starts_with($value, '$2y$')) {
+            $this->attributes['nss_pin'] = Hash::make($value);
+        } else {
+            $this->attributes['nss_pin'] = $value;
+        }
+    }
+
+    /**
+     * Verify the NSS PIN.
+     */
+    public function verifyPin(string $pin): bool
+    {
+        if (! $this->nss_pin) {
+            return false;
+        }
+
+        return Hash::check($pin, $this->nss_pin);
+    }
+
+    /**
+     * Generate a unique QR token for this user.
+     */
+    public function generateQrToken(): string
+    {
+        $token = hash('sha256', $this->id.$this->staff_id.now()->timestamp.Str::random(16));
+        $this->update(['qr_token' => $token]);
+
+        return $token;
+    }
+
+    /**
+     * Get the photo URL.
+     */
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (! $this->photo) {
+            return null;
+        }
+
+        return asset('storage/'.$this->photo);
+    }
+
+    /**
+     * Scope to filter NSS users only.
+     */
+    public function scopeNss($query)
+    {
+        return $query->where('is_nss', true);
     }
 }

@@ -112,10 +112,39 @@ class UserResource extends Resource
                             ->searchable()
                             ->label('Assign Roles'),
                         Forms\Components\Toggle::make('is_active')->default(true),
+                    ])->columns(2),
+
+                Forms\Components\Section::make('NSS Configuration')
+                    ->schema([
                         Forms\Components\Toggle::make('is_nss')
                             ->label('NSS Personnel')
-                            ->helperText('Check if this user is a National Service Person (exempt from meal payments)'),
-                    ])->columns(2),
+                            ->helperText('Check if this user is a National Service Person')
+                            ->live(),
+                        Forms\Components\FileUpload::make('photo')
+                            ->label('ID Photo')
+                            ->image()
+                            ->imageEditor()
+                            ->directory('user-photos')
+                            ->visibility('public')
+                            ->maxSize(2048)
+                            ->helperText('Photo for NSS ID card (max 2MB)')
+                            ->visible(fn (Get $get): bool => $get('is_nss')),
+                        Forms\Components\TextInput::make('nss_pin')
+                            ->label('4-Digit PIN')
+                            ->password()
+                            ->revealable()
+                            ->maxLength(4)
+                            ->minLength(4)
+                            ->numeric()
+                            ->helperText('For kiosk check-in (leave blank to keep existing)')
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->visible(fn (Get $get): bool => $get('is_nss')),
+                        Forms\Components\Placeholder::make('qr_token_status')
+                            ->label('QR Token')
+                            ->content(fn (?User $record): string => $record?->qr_token ? 'Generated ✓' : 'Not generated')
+                            ->visible(fn (Get $get): bool => $get('is_nss')),
+                    ])->columns(2)
+                    ->collapsible(),
             ]);
     }
 
@@ -142,6 +171,33 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('showIdCard')
+                    ->label('Show ID')
+                    ->icon('heroicon-o-identification')
+                    ->color('success')
+                    ->visible(fn (User $record): bool => $record->is_nss)
+                    ->modalHeading('NSS ID Card')
+                    ->modalWidth('md')
+                    ->modalContent(function (User $record) {
+                        // Generate QR token if not exists
+                        if (! $record->qr_token) {
+                            $record->generateQrToken();
+                        }
+
+                        return view('filament.modals.nss-id-card', ['user' => $record]);
+                    })
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Close'),
+                Tables\Actions\Action::make('generateQr')
+                    ->label('New QR')
+                    ->icon('heroicon-o-qr-code')
+                    ->color('info')
+                    ->visible(fn (User $record): bool => $record->is_nss)
+                    ->requiresConfirmation()
+                    ->modalDescription('This will invalidate the existing QR code on the user\'s ID card.')
+                    ->action(function (User $record) {
+                        $record->generateQrToken();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
