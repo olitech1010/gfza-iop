@@ -20,7 +20,11 @@ class LeaveRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $navigationLabel = 'Leave Requests';
+    protected static ?string $navigationLabel = 'ED Requests';
+
+    protected static ?string $modelLabel = 'Excuse Duty Request';
+
+    protected static ?string $pluralModelLabel = 'Excuse Duty Requests';
 
     public static function form(Form $form): Form
     {

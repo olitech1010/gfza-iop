@@ -1,7 +1,7 @@
 <x-filament-widgets::widget>
     <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-gray-900 dark:text-white text-sm font-normal">Pending Leave Approvals</h3>
+            <h3 class="text-gray-900 dark:text-white text-sm font-normal">Pending ED Approvals</h3>
             @if($pendingLeaves->count() > 0)
                 <a href="{{ $viewAllUrl }}" class="text-xs text-blue-600 hover:text-blue-800">View All</a>
             @endif

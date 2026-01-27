@@ -13,7 +13,7 @@
              style="background-color: #FCE8EC;">
             <p class="text-gray-600 text-xs font-normal mb-1">Pending Approvals</p>
             <h3 class="text-xl font-semibold" style="color: #ea4335;">{{ $pendingLeaves }}</h3>
-            <p class="text-gray-500 text-xs">Leave Requests</p>
+            <p class="text-gray-500 text-xs">ED Requests</p>
         </div>
         
         {{-- Open Tickets --}}
