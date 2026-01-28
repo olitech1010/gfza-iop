@@ -14,6 +14,11 @@ class NssAttendanceSummaryWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    public static function canView(): bool
+    {
+        return auth()->user()?->hasAnyRole(['super_admin', 'hr_manager']) ?? false;
+    }
+
     public function getStats(): array
     {
         $today = today();
