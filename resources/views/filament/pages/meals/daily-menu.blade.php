@@ -46,19 +46,19 @@
                     <div class="flex gap-2">
                         <button wire:click="serveDepartment" 
                                 wire:confirm="Mark all staff in this department as served?"
-                                class="inline-flex items-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg">
+                                class="inline-flex items-center px-4 py-2 bg-teal-100 hover:bg-teal-200 text-teal-800 font-medium rounded-lg border border-teal-300">
                             <x-heroicon-o-check-circle class="w-5 h-5 mr-2" />
                             Serve All Department
                         </button>
                         <button wire:click="markDepartmentPaid" 
                                 wire:confirm="Mark all staff in this department as paid? (NSS excluded)"
-                                class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg">
+                                class="inline-flex items-center px-4 py-2 bg-green-100 hover:bg-green-200 text-green-800 font-medium rounded-lg border border-green-300">
                             <x-heroicon-o-currency-dollar class="w-5 h-5 mr-2" />
                             Mark All Paid
                         </button>
                         <button wire:click="markDepartmentUnpaid" 
                                 wire:confirm="Mark all staff in this department as NOT paid?"
-                                class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg">
+                                class="inline-flex items-center px-4 py-2 bg-red-100 hover:bg-red-200 text-red-800 font-medium rounded-lg border border-red-300">
                             <x-heroicon-o-x-circle class="w-5 h-5 mr-2" />
                             Mark All Unpaid
                         </button>
