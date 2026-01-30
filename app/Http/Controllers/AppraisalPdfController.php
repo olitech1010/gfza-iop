@@ -19,7 +19,9 @@ class AppraisalPdfController extends Controller
         $appraisal->load(['user.department', 'period', 'targets', 'competencyScores']);
 
         $pdf = Pdf::loadView('appraisal-report', ['appraisal' => $appraisal]);
+        // Sanitize staff_id for filename (replace / with -)
+        $filename = 'Appraisal-' . str_replace('/', '-', $appraisal->user->staff_id ?? 'unknown') . '.pdf';
 
-        return $pdf->stream("Appraisal-{$appraisal->user->staff_id}.pdf");
+        return $pdf->stream($filename);
     }
 }
