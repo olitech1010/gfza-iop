@@ -12,10 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('photo')->nullable()->after('email');
-            $table->string('nss_pin')->nullable()->after('photo');
-            $table->string('qr_token')->nullable()->unique()->after('nss_pin');
-            $table->boolean('is_nss')->default(false)->after('qr_token');
+            // Note: is_nss already added in 2026_01_19_110100_enhance_meals_tables migration
+            if (!Schema::hasColumn('users', 'photo')) {
+                $table->string('photo')->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('users', 'nss_pin')) {
+                $table->string('nss_pin')->nullable()->after('photo');
+            }
+            if (!Schema::hasColumn('users', 'qr_token')) {
+                $table->string('qr_token')->nullable()->unique()->after('nss_pin');
+            }
         });
     }
 
@@ -25,7 +31,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['photo', 'nss_pin', 'qr_token', 'is_nss']);
+            // Note: is_nss belongs to 2026_01_19_110100_enhance_meals_tables migration
+            $table->dropColumn(['photo', 'nss_pin', 'qr_token']);
         });
     }
 };

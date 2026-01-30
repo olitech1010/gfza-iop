@@ -75,6 +75,20 @@ class AttendanceKiosk extends Component
         }
     }
 
+    public function processFaceLogin(int $userId): void
+    {
+        $user = User::where('id', $userId)
+            ->where('is_nss', true)
+            ->where('is_active', true)
+            ->first();
+
+        if ($user) {
+            $this->processAttendance($user, 'face');
+        } else {
+            $this->showError('User not recognized or inactive.');
+        }
+    }
+
     public function processPinLogin(): void
     {
         if (empty($this->staffId) || strlen($this->pin) !== 4) {

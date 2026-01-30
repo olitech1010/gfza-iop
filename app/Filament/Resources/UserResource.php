@@ -188,6 +188,15 @@ class UserResource extends Resource
                     })
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Close'),
+                Tables\Actions\Action::make('enrollFace')
+                    ->label('Enroll Face')
+                    ->icon('heroicon-o-face-smile')
+                    ->color('indigo')
+                    ->visible(fn (User $record): bool => $record->is_nss)
+                    ->modalHeading('Enroll Face Recognition')
+                    ->modalContent(fn (User $record) => view('filament.modals.face-enrollment-wrapper', ['user' => $record]))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Done'),
                 Tables\Actions\Action::make('generateQr')
                     ->label('New QR')
                     ->icon('heroicon-o-qr-code')

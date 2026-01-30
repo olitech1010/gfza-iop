@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FaceEnrollmentController;
 use App\Livewire\AttendanceKiosk;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,27 @@ Route::get('/', function () {
 // NSS Attendance Kiosk - Public access (no auth required)
 Route::get('/kiosk', AttendanceKiosk::class)->name('kiosk.attendance');
 
+// Face Recognition API Routes (Web middleware for session auth / Public for kiosk)
+Route::prefix('api/face')->group(function () {
+    // Kiosk needs public access to descriptors for client-side matching
+    Route::get('/descriptors', [FaceEnrollmentController::class, 'getDescriptors'])->name('api.face.descriptors');
+    
+    // Enrollment requires authentication (done via admin/user session)
+    Route::post('/enroll', [FaceEnrollmentController::class, 'enroll'])
+        ->middleware('auth')
+        ->name('api.face.enroll');
+});
+
 // Health check endpoint for monitoring
 Route::get('/health', function () {
     return response()->json(['status' => 'ok', 'timestamp' => now()->toIso8601String()]);
 })->name('health');
+
+// Appraisal PDF Report
+use App\Http\Controllers\AppraisalPdfController;
+
+Route::get('/appraisal/{appraisal}/pdf', AppraisalPdfController::class)
+    ->name('appraisal.pdf')
+    ->middleware(['auth']);
+
+

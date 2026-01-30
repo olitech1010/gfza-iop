@@ -11,24 +11,30 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Ensure an MIS department exists for the admin
+        // Ensure MIS department exists
         $misDept = Department::firstOrCreate(
-            ['code' => 'MIS'],
-            ['name' => 'Management Information Systems']
+            ['name' => 'Management Information System (MIS)']
         );
 
-        User::updateOrCreate(
+        // Create or update super admin - will be preserved on re-seed
+        $admin = User::updateOrCreate(
             ['email' => 'admin@gfza.gov.gh'],
             [
                 'name' => 'System Administrator',
                 'first_name' => 'System',
-                'last_name' => 'Admin',
-                'password' => Hash::make('password'),
+                'last_name' => 'Administrator',
+                'password' => Hash::make('00000000'),
                 'is_active' => true,
                 'department_id' => $misDept->id,
-                'staff_id' => 'ADMIN001',
+                'staff_id' => 'GFZA/001/00',
                 'job_title' => 'Super Admin',
             ]
         );
+
+        // Ensure super_admin role is assigned
+        if (!$admin->hasRole('super_admin')) {
+            $admin->assignRole('super_admin');
+        }
     }
 }
+

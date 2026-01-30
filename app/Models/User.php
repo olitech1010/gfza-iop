@@ -110,6 +110,8 @@ class User extends Authenticatable implements FilamentUser
         'photo',
         'nss_pin',
         'qr_token',
+        'face_descriptor',
+        'face_enrolled_at',
     ];
 
     public function department(): BelongsTo
@@ -153,6 +155,8 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_nss' => 'boolean',
+            'face_descriptor' => 'array',
+            'face_enrolled_at' => 'datetime',
         ];
     }
 
