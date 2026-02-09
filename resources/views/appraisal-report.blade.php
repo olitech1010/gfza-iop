@@ -5,7 +5,11 @@
     <title>Performance Appraisal Report</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
-        .header { text-align: center; margin-bottom: 20px; }
+        .letterhead { text-align: center; margin-bottom: 10px; border-bottom: 2px solid #006400; padding-bottom: 15px; }
+        .letterhead img { height: 60px; margin-bottom: 5px; }
+        .org-name { font-size: 18px; font-weight: bold; color: #006400; margin: 5px 0; }
+        .org-full-name { font-size: 14px; color: #333; margin-bottom: 5px; }
+        .header { text-align: center; margin-bottom: 20px; margin-top: 15px; }
         .section-title { background-color: #f0f0f0; padding: 5px; font-weight: bold; margin-top: 15px; border: 1px solid #ccc; }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; }
         th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
@@ -15,9 +19,16 @@
     </style>
 </head>
 <body>
+    {{-- GFZA Letterhead --}}
+    <div class="letterhead">
+        <img src="{{ public_path('images/logo.png') }}" alt="GFZA Logo">
+        <div class="org-name">GFZA</div>
+        <div class="org-full-name">Ghana Free Zones Authority</div>
+    </div>
+
     <div class="header">
-        <h2>PUBLIC SERVICES PERFORMANCE MANAGEMENT SYSTEM</h2>
-        <h3>ANNUAL PERFORMANCE APPRAISAL REPORT</h3>
+        <h2 style="margin: 5px 0;">PUBLIC SERVICES PERFORMANCE MANAGEMENT SYSTEM</h2>
+        <h3 style="margin: 5px 0;">ANNUAL PERFORMANCE APPRAISAL REPORT</h3>
     </div>
 
     <table>

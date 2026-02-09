@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class MisTicketResource extends Resource
 {
@@ -18,8 +19,32 @@ class MisTicketResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
+    /**
+     * Filter tickets based on user role.
+     * Staff can only see their own tickets.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Staff can only see their own tickets
+        if ($user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head'])) {
+            return $query->where('user_id', $user->id);
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
+        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+
         return $form
             ->schema([
                 Forms\Components\Section::make('Ticket Information')->schema([
@@ -51,6 +76,7 @@ class MisTicketResource extends Resource
                 ])->columns(2),
 
                 Forms\Components\Section::make('Status & Assignment')->schema([
+                    // Status - Staff cannot change, only MIS/Admin
                     Forms\Components\Select::make('status')
                         ->options([
                             'open' => 'Open',
@@ -59,25 +85,41 @@ class MisTicketResource extends Resource
                             'closed' => 'Closed',
                         ])
                         ->default('open')
-                        ->required(),
+                        ->required()
+                        ->disabled($isStaff)
+                        ->dehydrated(! $isStaff),
+
+                    // Requester - Staff cannot choose, auto-assigned
                     Forms\Components\Select::make('user_id')
                         ->relationship('requester', 'name')
                         ->label('Requester')
                         ->searchable()
                         ->preload()
-                        ->required(),
+                        ->required()
+                        ->default(fn () => $isStaff ? auth()->id() : null)
+                        ->disabled($isStaff)
+                        ->dehydrated(true),
+
+                    // Assigned Agent - Staff cannot assign
                     Forms\Components\Select::make('assigned_to_user_id')
-                        ->relationship('assignedStaff', 'name')
+                        ->relationship('assignedStaff', 'name', fn (Builder $query) => $query->whereHas('roles', fn ($q) => $q->where('name', 'mis_support')))
                         ->label('Assigned Agent')
                         ->searchable()
-                        ->preload(),
-                    Forms\Components\DateTimePicker::make('resolved_at'),
+                        ->preload()
+                        ->visible(! $isStaff),
+
+                    // Resolved At - Staff cannot set
+                    Forms\Components\DateTimePicker::make('resolved_at')
+                        ->visible(! $isStaff),
                 ])->columns(2),
             ]);
     }
 
     public static function table(Table $table): Table
     {
+        $user = auth()->user();
+        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('subject')
@@ -102,7 +144,8 @@ class MisTicketResource extends Resource
                 Tables\Columns\TextColumn::make('requester.name')
                     ->label('Requester')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(! $isStaff),
                 Tables\Columns\TextColumn::make('assignedStaff.name')
                     ->label('Agent')
                     ->searchable(),
@@ -119,7 +162,8 @@ class MisTicketResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(! $isStaff),
                 ]),
             ]);
     }

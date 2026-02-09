@@ -24,6 +24,47 @@ class NssAttendanceResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    /**
+     * Filter attendance records based on user role.
+     * - Staff: Only their own attendance
+     * - Dept Head: Only their department's attendance
+     * - HR/Super Admin: All records
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Super admin and HR manager can see all
+        if ($user->hasRole(['super_admin', 'hr_manager'])) {
+            return $query;
+        }
+
+        // Department head can see their department's attendance
+        if ($user->hasRole('dept_head')) {
+            return $query->whereHas('user', function ($q) use ($user) {
+                $q->where('department_id', $user->department_id);
+            });
+        }
+
+        // Staff can only see their own attendance
+        return $query->where('user_id', $user->id);
+    }
+
+    /**
+     * Control navigation visibility based on role.
+     */
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'hr_manager', 'dept_head', 'staff']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

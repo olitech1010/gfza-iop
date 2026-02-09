@@ -25,8 +25,50 @@ class MealRequestResource extends Resource
 
     protected static ?string $modelLabel = 'Meal Request';
 
+    /**
+     * Hide from staff - they should use the daily menu page instead.
+     */
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        // Hide from staff (they use daily menu)
+        if ($user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Filter meal requests based on user role.
+     * Staff can only see their own requests.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Staff can only see their own meal requests
+        if ($user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head'])) {
+            return $query->where('user_id', $user->id);
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
+        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
         return $form
             ->schema([
                 Forms\Components\Section::make('Request Information')
@@ -37,7 +79,10 @@ class MealRequestResource extends Resource
                             ->required()
                             ->searchable()
                             ->preload()
-                            ->native(false),
+                            ->native(false)
+                            ->default(fn () => $isStaff ? auth()->id() : null)
+                            ->disabled($isStaff)
+                            ->dehydrated(true),
 
                         Forms\Components\Select::make('weekly_menu_item_id')
                             ->label('Meal Selection')

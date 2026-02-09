@@ -21,7 +21,7 @@ class AppraisalResource extends Resource
     protected static ?string $model = Appraisal::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationGroup = 'HR Management';
+    protected static ?string $navigationGroup = 'HR Operations';
     protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string

@@ -57,6 +57,28 @@ class NssAttendance extends Model
     }
 
     /**
+     * Scope to filter by current week (Monday to Sunday).
+     */
+    public function scopeThisWeek($query)
+    {
+        return $query->whereBetween('date', [
+            now()->startOfWeek(),
+            now()->endOfWeek(),
+        ]);
+    }
+
+    /**
+     * Scope to filter by a specific week starting from given date.
+     */
+    public function scopeForWeek($query, $startDate)
+    {
+        $start = \Carbon\Carbon::parse($startDate)->startOfWeek();
+        $end = $start->copy()->endOfWeek();
+
+        return $query->whereBetween('date', [$start, $end]);
+    }
+
+    /**
      * Scope to filter late arrivals.
      */
     public function scopeLate($query)

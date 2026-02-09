@@ -15,7 +15,7 @@ class AppraisalPeriodResource extends Resource
     protected static ?string $model = AppraisalPeriod::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationGroup = 'HR Management';
+    protected static ?string $navigationGroup = 'HR Operations';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

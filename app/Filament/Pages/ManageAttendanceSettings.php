@@ -25,6 +25,16 @@ class ManageAttendanceSettings extends Page implements HasForms
 
     protected static ?int $navigationSort = 99;
 
+    /**
+     * Only admins can access attendance settings.
+     */
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'hr_manager']);
+    }
+
     protected static string $view = 'filament.pages.manage-attendance-settings';
 
     public ?array $data = [];

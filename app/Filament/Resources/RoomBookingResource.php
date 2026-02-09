@@ -27,8 +27,32 @@ class RoomBookingResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Filter bookings based on user role.
+     * Staff can only see their own bookings.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = auth()->user();
+
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Staff can only see their own bookings
+        if ($user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head'])) {
+            return $query->where('user_id', $user->id);
+        }
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
+        $user = auth()->user();
+        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+
         return $form
             ->schema([
                 Forms\Components\Section::make('Booking Details')
@@ -43,6 +67,7 @@ class RoomBookingResource extends Resource
                             ->searchable()
                             ->native(false),
 
+                        // Staff can only book for themselves
                         Forms\Components\Select::make('user_id')
                             ->label('Booked By')
                             ->relationship('user', 'name')
@@ -50,7 +75,9 @@ class RoomBookingResource extends Resource
                             ->required()
                             ->preload()
                             ->searchable()
-                            ->native(false),
+                            ->native(false)
+                            ->disabled($isStaff)
+                            ->dehydrated(true),
 
                         Forms\Components\TextInput::make('title')
                             ->label('Meeting Title')
@@ -122,7 +149,9 @@ class RoomBookingResource extends Resource
                             ])
                             ->default('confirmed')
                             ->required()
-                            ->native(false),
+                            ->native(false)
+                            ->disabled($isStaff)
+                            ->dehydrated(! $isStaff),
                     ])
                     ->columns(1)
                     ->visible(fn ($record) => $record !== null),
@@ -131,6 +160,9 @@ class RoomBookingResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = auth()->user();
+        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
@@ -142,7 +174,8 @@ class RoomBookingResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Booked By')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(! $isStaff),
 
                 Tables\Columns\TextColumn::make('start_time')
                     ->label('Start')
@@ -195,12 +228,13 @@ class RoomBookingResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Cancel Booking')
                     ->modalDescription('Are you sure you want to cancel this booking? This action cannot be undone.')
-                    ->visible(fn (RoomBooking $record): bool => $record->status === 'confirmed')
+                    ->visible(fn (RoomBooking $record): bool => $record->status === 'confirmed' && (! $isStaff || $record->user_id === auth()->id()))
                     ->action(fn (RoomBooking $record) => $record->update(['status' => 'cancelled'])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(! $isStaff),
                 ]),
             ]);
     }

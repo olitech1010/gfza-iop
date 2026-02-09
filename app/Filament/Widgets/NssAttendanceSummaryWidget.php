@@ -14,9 +14,13 @@ class NssAttendanceSummaryWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    /**
+     * Prevent this widget from appearing on the dashboard.
+     * It's only used as a header widget on the attendance page.
+     */
     public static function canView(): bool
     {
-        return auth()->user()?->hasAnyRole(['super_admin', 'hr_manager']) ?? false;
+        return false;
     }
 
     public function getStats(): array
