@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\Attendance;
 
 use App\Models\Memo;
 use App\Models\NssAttendance;
@@ -20,12 +20,11 @@ class LateComersWidget extends BaseWidget
     protected int|string|array $columnSpan = 'full';
 
     /**
-     * Prevent this widget from appearing on the dashboard.
-     * It's only used as a header widget on the attendance page.
+     * Only show on attendance page, not on dashboard.
      */
     public static function canView(): bool
     {
-        return false;
+        return request()->routeIs('filament.admin.resources.nss-attendances.*');
     }
 
     public ?string $weekStart = null;
@@ -67,7 +66,6 @@ class LateComersWidget extends BaseWidget
                     ->modalDescription('This will create and publish a memo addressed to all staff who were late this week.')
                     ->action(function () use ($startDate, $endDate) {
                         $weekRange = $startDate->format('M d').' - '.$endDate->format('M d, Y');
-
 
                         $lateUserIds = NssAttendance::whereBetween('date', [$startDate, $endDate])
                             ->where('status', 'late')

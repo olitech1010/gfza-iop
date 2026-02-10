@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Widgets\Attendance;
 
 use App\Models\NssAttendance;
 use Filament\Widgets\ChartWidget;
@@ -13,16 +13,15 @@ class AttendanceChartsWidget extends ChartWidget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?string $maxHeight = '300px';
+
     /**
-     * Prevent this widget from appearing on the dashboard.
-     * It's only used as a header widget on the attendance page.
+     * Only show on attendance page, not on dashboard.
      */
     public static function canView(): bool
     {
-        return false;
+        return request()->routeIs('filament.admin.resources.nss-attendances.*');
     }
-
-    protected static ?string $maxHeight = '300px';
 
     public ?string $filter = 'bar';
 

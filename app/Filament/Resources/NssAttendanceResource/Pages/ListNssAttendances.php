@@ -3,10 +3,9 @@
 namespace App\Filament\Resources\NssAttendanceResource\Pages;
 
 use App\Filament\Resources\NssAttendanceResource;
-use App\Filament\Widgets\AttendanceChartsWidget;
-use App\Filament\Widgets\AttendanceStatsWidget;
-use App\Filament\Widgets\LateComersWidget;
-use App\Filament\Widgets\NssAttendanceSummaryWidget;
+use App\Filament\Widgets\Attendance\AttendanceChartsWidget;
+use App\Filament\Widgets\Attendance\AttendanceStatsWidget;
+use App\Filament\Widgets\Attendance\LateComersWidget;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
