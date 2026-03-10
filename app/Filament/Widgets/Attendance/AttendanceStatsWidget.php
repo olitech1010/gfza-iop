@@ -23,7 +23,7 @@ class AttendanceStatsWidget extends Widget
     {
         return request()->routeIs('filament.admin.resources.nss-attendances.*');
     }
-
+    
     public function mount(?string $weekStart = null): void
     {
         $this->weekStart = $weekStart ?? now()->startOfWeek()->format('Y-m-d');
