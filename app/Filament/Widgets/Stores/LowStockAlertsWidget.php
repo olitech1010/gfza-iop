@@ -17,13 +17,14 @@ class LowStockAlertsWidget extends BaseWidget
     protected int|string|array $columnSpan = 'full';
 
     /**
-     * Only show on the dashboard for stores_manager and super_admin.
+     * Only show on the dashboard for stores_manager.
+     * Super admin sees this on the inventory ledger page instead.
      */
     public static function canView(): bool
     {
         $user = auth()->user();
 
-        return $user && ($user->hasRole('super_admin') || $user->hasRole('stores_manager'));
+        return $user && $user->hasRole('stores_manager');
     }
 
     public function table(Table $table): Table

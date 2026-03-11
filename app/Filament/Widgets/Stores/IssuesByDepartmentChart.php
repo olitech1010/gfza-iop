@@ -17,13 +17,14 @@ class IssuesByDepartmentChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
 
     /**
-     * Only show on the dashboard for stores_manager and super_admin.
+     * Only show on the dashboard for stores_manager.
+     * Super admin sees this on the inventory ledger page instead.
      */
     public static function canView(): bool
     {
         $user = auth()->user();
 
-        return $user && ($user->hasRole('super_admin') || $user->hasRole('stores_manager'));
+        return $user && $user->hasRole('stores_manager');
     }
 
     protected function getData(): array

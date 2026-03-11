@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\StoreTransactionResource\Pages;
 
 use App\Filament\Resources\StoreTransactionResource;
-use Filament\Actions;
+use App\Filament\Widgets\Stores\IssuesByDepartmentChart;
+use App\Filament\Widgets\Stores\LowStockAlertsWidget;
 use Filament\Resources\Pages\ListRecords;
 
 class ListStoreTransactions extends ListRecords
@@ -12,8 +13,25 @@ class ListStoreTransactions extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            // No create action, items are received/issued from the Items Resource
-        ];
+        return [];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        $user = auth()->user();
+
+        if ($user && ($user->hasRole('super_admin') || $user->hasRole('stores_manager'))) {
+            return [
+                LowStockAlertsWidget::class,
+                IssuesByDepartmentChart::class,
+            ];
+        }
+
+        return [];
+    }
+
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 1;
     }
 }
