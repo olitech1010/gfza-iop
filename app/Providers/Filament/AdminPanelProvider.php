@@ -45,6 +45,8 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('MIS Support'),
                 NavigationGroup::make()
+                    ->label('Stores Management'),
+                NavigationGroup::make()
                     ->label('Facilities'),
             ])
             ->renderHook(

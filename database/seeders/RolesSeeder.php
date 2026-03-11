@@ -17,6 +17,7 @@ class RolesSeeder extends Seeder
             'hr_manager',
             'dept_head',
             'mis_support',
+            'stores_manager',
             'staff',
         ];
 
