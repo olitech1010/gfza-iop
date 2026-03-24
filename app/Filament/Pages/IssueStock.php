@@ -61,12 +61,14 @@ class IssueStock extends Page implements HasForms
                             ->options(Department::pluck('name', 'id'))
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->required()
+                            ->live(),
                         Forms\Components\Select::make('user_id')
                             ->label('Issued To (Person)')
-                            ->options(User::pluck('name', 'id'))
+                            ->options(fn (Get $get) => User::where('department_id', $get('department_id'))->pluck('name', 'id'))
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->reactive(),
                         Forms\Components\TextInput::make('requisition_number')
                             ->label('Requisition Number'),
                         Forms\Components\TextInput::make('siv_number')

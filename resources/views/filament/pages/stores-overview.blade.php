@@ -5,8 +5,8 @@
 
 <x-filament-panels::page>
     {{-- Quick Stats Row --}}
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <div class="rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #1a73e8;">
+    <div class="flex flex-col xl:flex-row gap-4 mb-6 overflow-x-auto pb-2">
+        <div class="flex-1 min-w-[180px] rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #1a73e8;">
             <div class="flex items-center gap-3">
                 <x-heroicon-o-cube class="w-6 h-6 opacity-90" />
                 <div>
@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #6b7280;">
+        <div class="flex-1 min-w-[180px] rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #6b7280;">
             <div class="flex items-center gap-3">
                 <x-heroicon-o-banknotes class="w-6 h-6 opacity-90" />
                 <div>
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-xl px-5 py-4 text-white shadow-md" style="background-color: {{ $stats['lowStockCount'] > 0 ? '#ef4444' : '#10b981' }};">
+        <div class="flex-1 min-w-[180px] rounded-xl px-5 py-4 text-white shadow-md" style="background-color: {{ $stats['lowStockCount'] > 0 ? '#ef4444' : '#10b981' }};">
             <div class="flex items-center gap-3">
                 <x-heroicon-o-exclamation-triangle class="w-6 h-6 opacity-90" />
                 <div>
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #10b981;">
+        <div class="flex-1 min-w-[180px] rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #10b981;">
             <div class="flex items-center gap-3">
                 <x-heroicon-o-arrow-down-tray class="w-6 h-6 opacity-90" />
                 <div>
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #f59e0b;">
+        <div class="flex-1 min-w-[180px] rounded-xl px-5 py-4 text-white shadow-md" style="background-color: #f59e0b;">
             <div class="flex items-center gap-3">
                 <x-heroicon-o-arrow-up-tray class="w-6 h-6 opacity-90" />
                 <div>
