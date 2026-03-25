@@ -14,7 +14,12 @@ class StoreCategory extends Model
         'description',
     ];
 
-    public function storeItems()
+    public function storeItems(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StoreItem::class);
+    }
+
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(StoreItem::class);
     }

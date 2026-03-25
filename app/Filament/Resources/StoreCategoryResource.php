@@ -44,6 +44,16 @@ class StoreCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('items_count')
+                    ->label('Items')
+                    ->counts('items')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('items_sum_current_stock')
+                    ->label('Total Stock')
+                    ->sum('items', 'current_stock')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn ($state): string => $state > 0 ? 'success' : 'danger'),
                 Tables\Columns\TextColumn::make('description')
                     ->limit(50)
                     ->searchable(),
