@@ -47,6 +47,8 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Stores Management'),
                 NavigationGroup::make()
+                    ->label('Transport & Logistics'),
+                NavigationGroup::make()
                     ->label('Facilities'),
             ])
             ->renderHook(

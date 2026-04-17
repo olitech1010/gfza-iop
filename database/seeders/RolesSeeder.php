@@ -18,6 +18,10 @@ class RolesSeeder extends Seeder
             'dept_head',
             'mis_support',
             'stores_manager',
+            'transport_head',
+            'admin_director',
+            'head_of_drivers',
+            'driver',
             'staff',
         ];
 
