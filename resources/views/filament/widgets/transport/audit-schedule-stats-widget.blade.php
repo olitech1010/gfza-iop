@@ -57,20 +57,20 @@
     </div>
 
     {{-- Type Breakdown --}}
-    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
+    <div class="mt-4 flex flex-row gap-3">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
             <div class="text-xs text-gray-500 dark:text-gray-400">Internal</div>
             <div class="text-lg font-bold text-gray-900 dark:text-white">{{ $stats['internalCount'] }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
             <div class="text-xs text-gray-500 dark:text-gray-400">External</div>
             <div class="text-lg font-bold text-gray-900 dark:text-white">{{ $stats['externalCount'] }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
             <div class="text-xs text-gray-500 dark:text-gray-400">Compliance</div>
             <div class="text-lg font-bold text-gray-900 dark:text-white">{{ $stats['complianceCount'] }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 text-center">
             <div class="text-xs text-gray-500 dark:text-gray-400">Monitoring</div>
             <div class="text-lg font-bold text-gray-900 dark:text-white">{{ $stats['monitoringCount'] }}</div>
         </div>

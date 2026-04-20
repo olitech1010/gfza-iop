@@ -56,12 +56,12 @@
 
     {{-- Quick Actions --}}
     <h3 class="text-lg font-semibold mb-3 dark:text-white">Quick Actions</h3>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="flex flex-row gap-3 mb-8">
         <a href="{{ url('/admin/vehicle-requisitions/create') }}"
-           class="group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm transition-all hover:shadow-lg hover:border-blue-400 hover:-translate-y-1">
+           class="flex-1 group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 shadow-sm transition-all hover:shadow-lg hover:border-blue-400 hover:-translate-y-1">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30">
-                    <x-heroicon-o-clipboard-document-list class="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                    <x-heroicon-o-clipboard-document-list class="h-5 w-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 dark:text-white">New Requisition</h4>
@@ -70,10 +70,10 @@
             </div>
         </a>
         <a href="{{ url('/admin/vehicle-services/create') }}"
-           class="group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm transition-all hover:shadow-lg hover:border-amber-400 hover:-translate-y-1">
+           class="flex-1 group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 shadow-sm transition-all hover:shadow-lg hover:border-amber-400 hover:-translate-y-1">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30">
-                    <x-heroicon-o-wrench-screwdriver class="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
+                    <x-heroicon-o-wrench-screwdriver class="h-5 w-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Log Service</h4>
@@ -82,10 +82,10 @@
             </div>
         </a>
         <a href="{{ url('/admin/fuel-logs/create') }}"
-           class="group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm transition-all hover:shadow-lg hover:border-green-400 hover:-translate-y-1">
+           class="flex-1 group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 shadow-sm transition-all hover:shadow-lg hover:border-green-400 hover:-translate-y-1">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
-                    <x-heroicon-o-fire class="h-6 w-6 text-green-600 dark:text-green-400" />
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30">
+                    <x-heroicon-o-fire class="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Log Fuel</h4>
@@ -94,10 +94,10 @@
             </div>
         </a>
         <a href="{{ url('/admin/audit-trips') }}"
-           class="group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm transition-all hover:shadow-lg hover:border-purple-400 hover:-translate-y-1">
+           class="flex-1 group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 shadow-sm transition-all hover:shadow-lg hover:border-purple-400 hover:-translate-y-1">
             <div class="flex items-center gap-3">
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30">
-                    <x-heroicon-o-clipboard-document-check class="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/30">
+                    <x-heroicon-o-clipboard-document-check class="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
                     <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Audit Schedules</h4>
@@ -108,20 +108,20 @@
     </div>
 
     {{-- Monthly Summary Cards --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
+    <div class="flex flex-row gap-3 mb-8">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Trips This Month</div>
             <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['completedTripsMonth'] }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Active Trips</div>
             <div class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['activeTrips'] }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Fuel Cost (Month)</div>
             <div class="text-xl font-bold text-gray-900 dark:text-white">GHS {{ number_format($stats['totalFuelCostMonth'], 2) }}</div>
         </div>
-        <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
+        <div class="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-5 py-4">
             <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">Maintenance Due</div>
             <div class="text-2xl font-bold {{ $stats['maintenanceVehicles'] > 0 ? 'text-red-600' : 'text-gray-900 dark:text-white' }}">{{ $stats['maintenanceVehicles'] }}</div>
         </div>

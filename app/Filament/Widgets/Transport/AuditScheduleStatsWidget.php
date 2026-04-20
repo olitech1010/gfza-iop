@@ -11,6 +11,8 @@ class AuditScheduleStatsWidget extends Widget
 
     protected int | string | array $columnSpan = 'full';
 
+    protected static bool $isDiscovered = false;
+
     public function getStats(): array
     {
         $total = AuditTrip::count();
