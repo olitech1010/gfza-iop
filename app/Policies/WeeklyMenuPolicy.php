@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\WeeklyMenu;
 use App\Models\User;
+use App\Models\WeeklyMenu;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class WeeklyMenuPolicy

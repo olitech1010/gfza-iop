@@ -2,20 +2,20 @@
 
 namespace App\Policies;
 
-use App\Models\Appraisal;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Models\Appraisal;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AppraisalPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true; 
-        // Everyone can access the Resource, but the Query Scope will filter what they see.
-        // HOD sees department, Staff sees own, HR sees all.
+        return $user->can('view_any_appraisal');
     }
 
     /**
@@ -23,18 +23,7 @@ class AppraisalPolicy
      */
     public function view(User $user, Appraisal $appraisal): bool
     {
-        // HR can see all
-        if ($user->hasRole(['super_admin', 'hr_manager'])) {
-            return true;
-        }
-
-        // HOD can see their department/assigned reviews
-        if ($appraisal->hod_id === $user->id) {
-            return true;
-        }
-
-        // Staff can see their own
-        return $appraisal->user_id === $user->id;
+        return $user->can('view_appraisal');
     }
 
     /**
@@ -42,9 +31,7 @@ class AppraisalPolicy
      */
     public function create(User $user): bool
     {
-        // Only Staff / Regular users create appraisals for themselves?
-        // Usually yes, at the start of the period.
-        return true; 
+        return $user->can('create_appraisal');
     }
 
     /**
@@ -52,26 +39,7 @@ class AppraisalPolicy
      */
     public function update(User $user, Appraisal $appraisal): bool
     {
-        if ($user->hasRole(['super_admin'])) {
-            return true;
-        }
-
-        switch ($appraisal->status) {
-            case 'goal_setting':
-                // Staff can edit their own *during* goal setting
-                return $user->id === $appraisal->user_id;
-            
-            case 'hod_review':
-                // HOD can edit *during* hod_review
-                return $user->id === $appraisal->hod_id;
-
-            case 'hr_review':
-                // HR can edit/finalize *during* hr_review
-                return $user->hasRole('hr_manager');
-
-            default:
-                return false;
-        }
+        return $user->can('update_appraisal');
     }
 
     /**
@@ -79,6 +47,62 @@ class AppraisalPolicy
      */
     public function delete(User $user, Appraisal $appraisal): bool
     {
-        return $user->hasRole(['super_admin', 'hr_manager']);
+        return $user->can('delete_appraisal');
+    }
+
+    /**
+     * Determine whether the user can bulk delete.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return $user->can('delete_any_appraisal');
+    }
+
+    /**
+     * Determine whether the user can permanently delete.
+     */
+    public function forceDelete(User $user, Appraisal $appraisal): bool
+    {
+        return $user->can('force_delete_appraisal');
+    }
+
+    /**
+     * Determine whether the user can permanently bulk delete.
+     */
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->can('force_delete_any_appraisal');
+    }
+
+    /**
+     * Determine whether the user can restore.
+     */
+    public function restore(User $user, Appraisal $appraisal): bool
+    {
+        return $user->can('restore_appraisal');
+    }
+
+    /**
+     * Determine whether the user can bulk restore.
+     */
+    public function restoreAny(User $user): bool
+    {
+        return $user->can('restore_any_appraisal');
+    }
+
+    /**
+     * Determine whether the user can replicate.
+     */
+    public function replicate(User $user, Appraisal $appraisal): bool
+    {
+        return $user->can('replicate_appraisal');
+    }
+
+    /**
+     * Determine whether the user can reorder.
+     */
+    public function reorder(User $user): bool
+    {
+        return $user->can('reorder_appraisal');
     }
 }

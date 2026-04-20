@@ -20,20 +20,10 @@ class MisTicketPolicy
 
     /**
      * Determine whether the user can view the model.
-     * Staff can only view their own tickets.
      */
     public function view(User $user, MisTicket $misTicket): bool
     {
-        if (! $user->can('view_mis::ticket')) {
-            return false;
-        }
-
-        // Staff can only view their own tickets
-        if ($user->hasRole('staff') && $misTicket->user_id !== $user->id) {
-            return false;
-        }
-
-        return true;
+        return $user->can('view_mis::ticket');
     }
 
     /**
@@ -46,20 +36,10 @@ class MisTicketPolicy
 
     /**
      * Determine whether the user can update the model.
-     * Staff can only update their own tickets.
      */
     public function update(User $user, MisTicket $misTicket): bool
     {
-        if (! $user->can('update_mis::ticket')) {
-            return false;
-        }
-
-        // Staff can only update their own tickets
-        if ($user->hasRole('staff') && $misTicket->user_id !== $user->id) {
-            return false;
-        }
-
-        return true;
+        return $user->can('update_mis::ticket');
     }
 
     /**

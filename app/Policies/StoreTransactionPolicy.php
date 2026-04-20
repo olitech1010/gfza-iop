@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Caterer;
+use App\Models\StoreTransaction;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class CatererPolicy
+class StoreTransactionPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class CatererPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_caterer');
+        return $user->can('view_any_store::transaction');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Caterer $caterer): bool
+    public function view(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('view_caterer');
+        return $user->can('view_store::transaction');
     }
 
     /**
@@ -31,23 +31,23 @@ class CatererPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_caterer');
+        return $user->can('create_store::transaction');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Caterer $caterer): bool
+    public function update(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('update_caterer');
+        return $user->can('update_store::transaction');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Caterer $caterer): bool
+    public function delete(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('delete_caterer');
+        return $user->can('delete_store::transaction');
     }
 
     /**
@@ -55,15 +55,15 @@ class CatererPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_caterer');
+        return $user->can('delete_any_store::transaction');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, Caterer $caterer): bool
+    public function forceDelete(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('force_delete_caterer');
+        return $user->can('force_delete_store::transaction');
     }
 
     /**
@@ -71,15 +71,15 @@ class CatererPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_caterer');
+        return $user->can('force_delete_any_store::transaction');
     }
 
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, Caterer $caterer): bool
+    public function restore(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('restore_caterer');
+        return $user->can('restore_store::transaction');
     }
 
     /**
@@ -87,15 +87,15 @@ class CatererPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_caterer');
+        return $user->can('restore_any_store::transaction');
     }
 
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, Caterer $caterer): bool
+    public function replicate(User $user, StoreTransaction $storeTransaction): bool
     {
-        return $user->can('replicate_caterer');
+        return $user->can('replicate_store::transaction');
     }
 
     /**
@@ -103,6 +103,6 @@ class CatererPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_caterer');
+        return $user->can('reorder_store::transaction');
     }
 }

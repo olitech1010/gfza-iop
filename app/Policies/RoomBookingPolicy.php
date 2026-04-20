@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\RoomBooking;
 use App\Models\User;
+use App\Models\RoomBooking;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RoomBookingPolicy
@@ -20,20 +20,10 @@ class RoomBookingPolicy
 
     /**
      * Determine whether the user can view the model.
-     * Staff can only view their own bookings.
      */
     public function view(User $user, RoomBooking $roomBooking): bool
     {
-        if (! $user->can('view_room::booking')) {
-            return false;
-        }
-
-        // Staff can only view their own bookings
-        if ($user->hasRole('staff') && $roomBooking->user_id !== $user->id) {
-            return false;
-        }
-
-        return true;
+        return $user->can('view_room::booking');
     }
 
     /**
@@ -46,38 +36,18 @@ class RoomBookingPolicy
 
     /**
      * Determine whether the user can update the model.
-     * Staff can only update their own bookings.
      */
     public function update(User $user, RoomBooking $roomBooking): bool
     {
-        if (! $user->can('update_room::booking')) {
-            return false;
-        }
-
-        // Staff can only update their own bookings
-        if ($user->hasRole('staff') && $roomBooking->user_id !== $user->id) {
-            return false;
-        }
-
-        return true;
+        return $user->can('update_room::booking');
     }
 
     /**
      * Determine whether the user can delete the model.
-     * Staff can only delete their own bookings.
      */
     public function delete(User $user, RoomBooking $roomBooking): bool
     {
-        if (! $user->can('delete_room::booking')) {
-            return false;
-        }
-
-        // Staff can only delete their own bookings
-        if ($user->hasRole('staff') && $roomBooking->user_id !== $user->id) {
-            return false;
-        }
-
-        return true;
+        return $user->can('delete_room::booking');
     }
 
     /**
