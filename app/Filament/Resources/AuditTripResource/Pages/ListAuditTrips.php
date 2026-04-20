@@ -6,9 +6,12 @@ use App\Filament\Resources\AuditTripResource;
 use App\Models\AuditTrip;
 use Filament\Actions;
 use Filament\Resources\Pages\Page;
+use Livewire\WithPagination;
 
 class ListAuditTrips extends Page
 {
+    use WithPagination;
+
     protected static string $resource = AuditTripResource::class;
 
     protected static string $view = 'filament.pages.audit-trips-kanban';
@@ -17,6 +20,13 @@ class ListAuditTrips extends Page
     public string $teamFilter = '';
     public string $typeFilter = '';
     public string $searchQuery = '';
+
+    protected $queryString = [
+        'activeTab' => ['except' => 'all'],
+        'teamFilter' => ['except' => ''],
+        'typeFilter' => ['except' => ''],
+        'searchQuery' => ['except' => ''],
+    ];
 
     protected function getHeaderActions(): array
     {
@@ -34,7 +44,7 @@ class ListAuditTrips extends Page
 
     public function getTrips()
     {
-        $query = AuditTrip::query();
+        $query = AuditTrip::with(['driver.user', 'vehicle']);
 
         if ($this->activeTab !== 'all') {
             $query->where('status', $this->activeTab);
@@ -52,7 +62,10 @@ class ListAuditTrips extends Page
             $query->where(function ($q) {
                 $q->where('company_name', 'like', "%{$this->searchQuery}%")
                   ->orWhere('team_members', 'like', "%{$this->searchQuery}%")
-                  ->orWhere('region', 'like', "%{$this->searchQuery}%");
+                  ->orWhere('region', 'like', "%{$this->searchQuery}%")
+                  ->orWhereHas('driver.user', function ($dq) {
+                      $dq->where('name', 'like', "%{$this->searchQuery}%");
+                  });
             });
         }
 
@@ -77,17 +90,31 @@ class ListAuditTrips extends Page
     public function setTab(string $tab): void
     {
         $this->activeTab = $tab;
+        $this->resetPage();
+    }
+
+    public function updatedSearchQuery(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTeamFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTypeFilter(): void
+    {
+        $this->resetPage();
     }
 
     public function markInProgress(int $id): void
     {
         AuditTrip::where('id', $id)->update(['status' => 'in_progress']);
-        $this->dispatch('$refresh');
     }
 
     public function markCompleted(int $id): void
     {
         AuditTrip::where('id', $id)->update(['status' => 'completed']);
-        $this->dispatch('$refresh');
     }
 }
