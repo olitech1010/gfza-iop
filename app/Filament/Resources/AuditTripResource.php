@@ -23,6 +23,13 @@ class AuditTripResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->canAccessTransport();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

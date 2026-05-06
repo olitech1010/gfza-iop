@@ -12,7 +12,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class VehicleRequisitionResource extends Resource
 {
@@ -149,7 +148,7 @@ class VehicleRequisitionResource extends Resource
                     ->label('Department'),
             ])
             ->actions([
-                // Head of Drivers: Assign Vehicle & Driver
+                // Head of Transport: Assign Vehicle & Driver
                 Tables\Actions\Action::make('assign')
                     ->label('Assign Vehicle')
                     ->icon('heroicon-o-truck')
@@ -163,7 +162,7 @@ class VehicleRequisitionResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('driver_id')
                             ->label('Driver')
-                            ->options(Driver::where('status', 'active')->with('user')->get()->mapWithKeys(fn (Driver $d) => [$d->id => $d->user->name . " ({$d->license_number})"]))
+                            ->options(Driver::where('status', 'active')->with('user')->get()->mapWithKeys(fn (Driver $d) => [$d->id => $d->user->name." ({$d->license_number})"]))
                             ->searchable()
                             ->required(),
                     ])
@@ -178,7 +177,7 @@ class VehicleRequisitionResource extends Resource
                         Notification::make()->success()->title('Vehicle & driver assigned.')->send();
                     }),
 
-                // Transport Head: Approve
+                // Head of Transport: Approve
                 Tables\Actions\Action::make('transport_approve')
                     ->label('Transport Approve')
                     ->icon('heroicon-o-check-circle')
@@ -210,7 +209,7 @@ class VehicleRequisitionResource extends Resource
                         Notification::make()->success()->title('Admin approval granted. Trip can begin.')->send();
                     }),
 
-                // Head of Drivers: Start Trip
+                // Head of Transport: Start Trip
                 Tables\Actions\Action::make('start_trip')
                     ->label('Start Trip')
                     ->icon('heroicon-o-play')
@@ -241,7 +240,7 @@ class VehicleRequisitionResource extends Resource
                         Notification::make()->success()->title('Trip started.')->send();
                     }),
 
-                // Head of Drivers: Complete Trip
+                // Head of Transport: Complete Trip
                 Tables\Actions\Action::make('complete_trip')
                     ->label('Complete Trip')
                     ->icon('heroicon-o-check')

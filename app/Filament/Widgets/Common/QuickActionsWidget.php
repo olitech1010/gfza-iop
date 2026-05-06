@@ -108,11 +108,61 @@ class QuickActionsWidget extends Widget
             ],
         ];
 
-        return match ($role) {
-            'super_admin' => array_merge($commonActions, $hrActions, $misActions),
-            'hr_manager' => array_merge($commonActions, $hrActions),
-            'mis_support' => array_merge($commonActions, $misActions),
-            'dept_head' => array_merge($commonActions, $staffActions, $deptHeadActions),
+        $transportActions = [
+            [
+                'label' => 'Transport Dashboard',
+                'icon' => 'heroicon-o-map',
+                'url' => '/admin/transport-dashboard',
+                'color' => '#1DB954',
+            ],
+            [
+                'label' => 'Vehicle Requisitions',
+                'icon' => 'heroicon-o-clipboard-document-list',
+                'url' => '/admin/vehicle-requisitions',
+                'color' => '#3B82F6',
+            ],
+            [
+                'label' => 'Log Service',
+                'icon' => 'heroicon-o-wrench-screwdriver',
+                'url' => '/admin/vehicle-services/create',
+                'color' => '#F59E0B',
+            ],
+            [
+                'label' => 'Log Fuel',
+                'icon' => 'heroicon-o-fire',
+                'url' => '/admin/fuel-logs/create',
+                'color' => '#10B981',
+            ],
+            [
+                'label' => 'Audit Schedules',
+                'icon' => 'heroicon-o-clipboard-document-check',
+                'url' => '/admin/audit-trips',
+                'color' => '#8B5CF6',
+            ],
+            [
+                'label' => 'Fleet Registry',
+                'icon' => 'heroicon-o-truck',
+                'url' => '/admin/vehicles',
+                'color' => '#06B6D4',
+            ],
+            [
+                'label' => 'Manage Drivers',
+                'icon' => 'heroicon-o-identification',
+                'url' => '/admin/drivers',
+                'color' => '#EC4899',
+            ],
+        ];
+
+        // Check if user is transport dept_head
+        $user = Auth::user();
+        $isTransportHead = $user && $user->isTransportHead();
+
+        return match (true) {
+            $role === 'super_admin' => array_merge($commonActions, $hrActions, $misActions),
+            $role === 'hr_manager' => array_merge($commonActions, $hrActions),
+            $role === 'mis_support' => array_merge($commonActions, $misActions),
+            $role === 'dept_head' && $isTransportHead => array_merge($commonActions, $transportActions),
+            $role === 'dept_head' => array_merge($commonActions, $staffActions, $deptHeadActions),
             default => array_merge($commonActions, $staffActions),
         };
     }

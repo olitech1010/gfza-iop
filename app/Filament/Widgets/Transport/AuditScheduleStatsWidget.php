@@ -9,9 +9,16 @@ class AuditScheduleStatsWidget extends Widget
 {
     protected static string $view = 'filament.widgets.transport.audit-schedule-stats-widget';
 
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected static bool $isDiscovered = false;
+
+    public static function canView(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->canAccessTransport();
+    }
 
     public function getStats(): array
     {

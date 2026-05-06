@@ -27,6 +27,7 @@ class DepartmentSeeder extends Seeder
             'Media',
             'Compliance',
             'Management Information System (MIS)',
+            'Transport',
         ];
 
         foreach ($departments as $name) {

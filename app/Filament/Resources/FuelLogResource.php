@@ -22,6 +22,13 @@ class FuelLogResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->canAccessTransport();
+    }
+
     public static function form(Form $form): Form
     {
         return $form

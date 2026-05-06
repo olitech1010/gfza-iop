@@ -208,6 +208,24 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Check if the user is the Head of the Transport Department.
+     */
+    public function isTransportHead(): bool
+    {
+        return $this->hasRole('dept_head')
+            && $this->department
+            && str_contains(strtolower($this->department->name), 'transport');
+    }
+
+    /**
+     * Check if the user can access transport management resources.
+     */
+    public function canAccessTransport(): bool
+    {
+        return $this->hasRole('super_admin') || $this->isTransportHead();
+    }
+
+    /**
      * Scope to filter NSS users only.
      */
     public function scopeNss($query)

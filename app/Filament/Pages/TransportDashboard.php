@@ -24,6 +24,13 @@ class TransportDashboard extends Page
 
     protected static string $view = 'filament.pages.transport-dashboard';
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->canAccessTransport();
+    }
+
     public function getStats(): array
     {
         return [

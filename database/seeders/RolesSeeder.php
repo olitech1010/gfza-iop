@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -18,9 +17,7 @@ class RolesSeeder extends Seeder
             'dept_head',
             'mis_support',
             'stores_manager',
-            'transport_head',
             'admin_director',
-            'head_of_drivers',
             'driver',
             'staff',
         ];
