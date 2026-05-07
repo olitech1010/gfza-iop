@@ -15,10 +15,17 @@ class StoreCategoryResource extends Resource
     protected static ?string $model = StoreCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    
+
     protected static ?string $navigationGroup = 'Stores Management';
 
     protected static ?int $navigationSort = 1;
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
 
     public static function form(Form $form): Form
     {

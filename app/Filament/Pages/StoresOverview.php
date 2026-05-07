@@ -20,6 +20,13 @@ class StoresOverview extends Page
 
     protected static string $view = 'filament.pages.stores-overview';
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public function getStats(): array
     {
         $totalItems = StoreItem::count();

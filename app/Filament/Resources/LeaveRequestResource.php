@@ -187,14 +187,27 @@ class LeaveRequestResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
+        $user = auth()->user();
 
-        // Staff and MIS support can only see their own leave requests
-        if (auth()->user()->hasRole(['staff', 'mis_support'])) {
-            return $query->where('user_id', auth()->id());
+        if (! $user) {
+            return $query->whereRaw('1 = 0');
         }
 
-        // HR, dept heads, and super admins see all leave requests
-        return $query;
+        // Super admin and HR manager see all
+        if ($user->hasAnyRole(['super_admin', 'hr_manager'])) {
+            return $query;
+        }
+
+        // Dept heads see their own + their department's requests
+        if ($user->hasRole('dept_head')) {
+            return $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('user', fn ($sub) => $sub->where('department_id', $user->department_id));
+            });
+        }
+
+        // Everyone else: only their own
+        return $query->where('user_id', $user->id);
     }
 
     public static function getPages(): array

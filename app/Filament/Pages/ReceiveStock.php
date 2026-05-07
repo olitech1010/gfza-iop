@@ -31,6 +31,13 @@ class ReceiveStock extends Page implements HasForms
 
     protected static string $view = 'filament.pages.receive-stock';
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public ?array $data = [];
 
     public function mount(): void
@@ -146,7 +153,7 @@ class ReceiveStock extends Page implements HasForms
 
         Notification::make()
             ->success()
-            ->title("Stock Received Successfully")
+            ->title('Stock Received Successfully')
             ->body("{$count} item(s) received and stock updated.")
             ->send();
 

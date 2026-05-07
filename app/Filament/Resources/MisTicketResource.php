@@ -32,18 +32,19 @@ class MisTicketResource extends Resource
             return $query->whereRaw('1 = 0');
         }
 
-        // Staff can only see their own tickets
-        if ($user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head'])) {
-            return $query->where('user_id', $user->id);
+        // Only MIS support and super admin see all tickets
+        if ($user->hasAnyRole(['super_admin', 'mis_support'])) {
+            return $query;
         }
 
-        return $query;
+        // Everyone else sees only their own tickets
+        return $query->where('user_id', $user->id);
     }
 
     public static function form(Form $form): Form
     {
         $user = auth()->user();
-        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+        $isStaff = $user && ! $user->hasAnyRole(['super_admin', 'mis_support']);
 
         return $form
             ->schema([
@@ -118,7 +119,7 @@ class MisTicketResource extends Resource
     public static function table(Table $table): Table
     {
         $user = auth()->user();
-        $isStaff = $user && $user->hasRole('staff') && ! $user->hasAnyRole(['super_admin', 'hr_manager', 'mis_support', 'dept_head']);
+        $isStaff = $user && ! $user->hasAnyRole(['super_admin', 'mis_support']);
 
         return $table
             ->columns([

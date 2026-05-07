@@ -20,6 +20,13 @@ class SupplierResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form

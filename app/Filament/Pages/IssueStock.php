@@ -33,6 +33,13 @@ class IssueStock extends Page implements HasForms
 
     protected static string $view = 'filament.pages.issue-stock';
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public ?array $data = [];
 
     public function mount(): void
@@ -124,6 +131,7 @@ class IssueStock extends Page implements HasForms
                     ->title('Insufficient Stock')
                     ->body("Not enough stock for \"{$item->name}\". Available: {$item->current_stock}, Requested: {$line['quantity']}")
                     ->send();
+
                 return;
             }
         }
@@ -153,7 +161,7 @@ class IssueStock extends Page implements HasForms
 
         Notification::make()
             ->success()
-            ->title("Stock Issued Successfully")
+            ->title('Stock Issued Successfully')
             ->body("{$count} item(s) issued and stock updated.")
             ->send();
 

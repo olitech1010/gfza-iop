@@ -24,6 +24,13 @@ class StoreTransactionResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public static function canCreate(): bool
     {
         return false; // Transactions are created via Actions on the Item Resource
@@ -63,12 +70,14 @@ class StoreTransactionResource extends Resource
                 Tables\Columns\TextColumn::make('source_destination')
                     ->getStateUsing(function (StoreTransaction $record) {
                         if ($record->type === 'receipt') {
-                            return 'From: ' . ($record->supplier->name ?? 'Unknown Supplier');
+                            return 'From: '.($record->supplier->name ?? 'Unknown Supplier');
                         } elseif ($record->type === 'issue') {
                             $dept = $record->department->name ?? 'Unknown Dept';
                             $user = $record->user->name ?? '';
-                            return "To: $dept" . ($user ? " ($user)" : '');
+
+                            return "To: $dept".($user ? " ($user)" : '');
                         }
+
                         return 'Adjustment';
                     })
                     ->label('Source / Destination'),
@@ -76,14 +85,17 @@ class StoreTransactionResource extends Resource
                 Tables\Columns\TextColumn::make('reference_docs')
                     ->getStateUsing(function (StoreTransaction $record) {
                         if ($record->type === 'receipt') {
-                            $sra = $record->sra_number ? "SRA: {$record->sra_number}" : "";
-                            $inv = $record->invoice_number ? "INV: {$record->invoice_number}" : "";
+                            $sra = $record->sra_number ? "SRA: {$record->sra_number}" : '';
+                            $inv = $record->invoice_number ? "INV: {$record->invoice_number}" : '';
+
                             return trim("$sra $inv");
                         } elseif ($record->type === 'issue') {
-                            $siv = $record->siv_number ? "SIV: {$record->siv_number}" : "";
-                            $req = $record->requisition_number ? "REQ: {$record->requisition_number}" : "";
+                            $siv = $record->siv_number ? "SIV: {$record->siv_number}" : '';
+                            $req = $record->requisition_number ? "REQ: {$record->requisition_number}" : '';
+
                             return trim("$siv $req");
                         }
+
                         return reset($record->notes);
                     })
                     ->label('Reference Docs'),

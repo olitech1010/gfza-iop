@@ -23,6 +23,13 @@ class StoreItemResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && $user->hasAnyRole(['super_admin', 'stores_manager']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -67,7 +74,7 @@ class StoreItemResource extends Resource
                             ->maxLength(65535)
                             ->columnSpanFull(),
                     ])->columns(2),
-                    
+
                 Forms\Components\Section::make('Current Stock')
                     ->schema([
                         Forms\Components\TextInput::make('current_stock')
@@ -102,6 +109,7 @@ class StoreItemResource extends Resource
                         if ($record->current_stock <= $record->reorder_level) {
                             return 'warning';
                         }
+
                         return 'success';
                     }),
                 Tables\Columns\TextColumn::make('reorder_level')
@@ -152,7 +160,7 @@ class StoreItemResource extends Resource
                     ->action(function (StoreItem $record, array $data): void {
                         DB::transaction(function () use ($record, $data) {
                             $newStock = $record->current_stock + $data['quantity'];
-                            
+
                             StoreTransaction::create([
                                 'store_item_id' => $record->id,
                                 'type' => 'receipt',
@@ -164,16 +172,16 @@ class StoreItemResource extends Resource
                                 'invoice_number' => $data['invoice_number'] ?? null,
                                 'sra_number' => $data['sra_number'] ?? null,
                             ]);
-                            
+
                             $record->update(['current_stock' => $newStock]);
-                            
+
                             if (isset($data['unit_price']) && $data['unit_price'] > 0) {
                                 $record->update(['unit_cost' => $data['unit_price']]);
                             }
                         });
                     })
                     ->successNotificationTitle('Stock received successfully.'),
-                
+
                 // ISSUE STOCK ACTION
                 Tables\Actions\Action::make('issue_stock')
                     ->label('Issue')
@@ -207,7 +215,7 @@ class StoreItemResource extends Resource
                     ->action(function (StoreItem $record, array $data): void {
                         DB::transaction(function () use ($record, $data) {
                             $newStock = $record->current_stock - $data['quantity'];
-                            
+
                             StoreTransaction::create([
                                 'store_item_id' => $record->id,
                                 'type' => 'issue',
@@ -219,7 +227,7 @@ class StoreItemResource extends Resource
                                 'requisition_number' => $data['requisition_number'] ?? null,
                                 'siv_number' => $data['siv_number'] ?? null,
                             ]);
-                            
+
                             $record->update(['current_stock' => $newStock]);
                         });
                     })
@@ -248,7 +256,7 @@ class StoreItemResource extends Resource
                     ->action(function (StoreItem $record, array $data): void {
                         DB::transaction(function () use ($record, $data) {
                             $newStock = $record->current_stock + $data['quantity'];
-                            
+
                             StoreTransaction::create([
                                 'store_item_id' => $record->id,
                                 'type' => 'adjustment',
@@ -257,7 +265,7 @@ class StoreItemResource extends Resource
                                 'balance_after' => $newStock,
                                 'notes' => $data['notes'],
                             ]);
-                            
+
                             $record->update(['current_stock' => $newStock]);
                         });
                     })
