@@ -61,121 +61,165 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @forelse($trips as $trip)
             @php
-                $statusConfig = match($trip->status) {
-                    'scheduled' => ['border' => 'border-l-slate-400', 'badge' => 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300', 'dot' => 'bg-slate-400'],
-                    'in_progress' => ['border' => 'border-l-amber-500', 'badge' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', 'dot' => 'bg-amber-500'],
-                    'completed' => ['border' => 'border-l-emerald-500', 'badge' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', 'dot' => 'bg-emerald-500'],
-                    'cancelled' => ['border' => 'border-l-red-500', 'badge' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', 'dot' => 'bg-red-500'],
-                    'postponed' => ['border' => 'border-l-blue-500', 'badge' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400', 'dot' => 'bg-blue-500'],
-                    default => ['border' => 'border-l-slate-400', 'badge' => 'bg-slate-100 text-slate-700', 'dot' => 'bg-slate-400'],
-                };
                 $driverName = $trip->driver?->user?->name;
+
+                $statusIcon = match($trip->status) {
+                    'scheduled' => 'heroicon-o-clock',
+                    'in_progress' => 'heroicon-o-arrow-path',
+                    'completed' => 'heroicon-o-check-circle',
+                    'cancelled' => 'heroicon-o-x-circle',
+                    'postponed' => 'heroicon-o-pause-circle',
+                    default => 'heroicon-o-clock',
+                };
+
+                $borderColor = match($trip->status) {
+                    'scheduled' => 'border-l-gray-400',
+                    'in_progress' => 'border-l-amber-500',
+                    'completed' => 'border-l-emerald-500',
+                    'cancelled' => 'border-l-red-500',
+                    'postponed' => 'border-l-blue-500',
+                    default => 'border-l-gray-400',
+                };
             @endphp
 
-            <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 border-l-4 {{ $statusConfig['border'] }} shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-250 ease-out">
-                {{-- Header --}}
-                <div class="px-5 pt-5 pb-3">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                                {{ $trip->team_name }}
-                            </span>
-                            <span class="text-[11px] text-gray-400 dark:text-gray-500">#{{ $trip->sequence_number }}</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full {{ $statusConfig['dot'] }}"></span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold {{ $statusConfig['badge'] }}">
-                                {{ str_replace('_', ' ', ucfirst($trip->status)) }}
-                            </span>
-                        </div>
-                    </div>
+            <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 border-l-4 {{ $borderColor }} shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 ease-out"
+                 style="padding: 20px 24px;">
 
-                    {{-- Company Name --}}
-                    <h3 class="text-[15px] font-semibold text-gray-900 dark:text-white leading-snug mb-3">
-                        {{ $trip->company_name }}
-                    </h3>
-
-                    {{-- Tags --}}
-                    <div class="flex flex-wrap gap-1.5 mb-2">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium
-                            {{ $trip->audit_type === 'compliance' ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400' : 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/20 dark:text-cyan-400' }}">
-                            {{ ucfirst($trip->audit_type) }}
-                        </span>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium
-                            {{ $trip->schedule_type === 'internal' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' }}">
-                            {{ ucfirst($trip->schedule_type) }}
-                        </span>
-                        @if($trip->region)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400">
-                                {{ $trip->region }}
-                            </span>
-                        @endif
-                    </div>
+                {{-- 2. Header row: Team + Sequence + Status --}}
+                <div class="flex items-center gap-2">
+                    {{-- Team pill --}}
+                    <span style="font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px;"
+                          class="border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                        {{ $trip->team_name }}
+                    </span>
+                    {{-- Sequence --}}
+                    <span style="font-size: 11px;" class="text-gray-400 dark:text-gray-500">#{{ $trip->sequence_number }}</span>
+                    {{-- Status pill (pushed right) --}}
+                    @php
+                        $statusClasses = match($trip->status) {
+                            'in_progress' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400',
+                            'completed' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400',
+                            'cancelled' => 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
+                            'postponed' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+                            default => 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+                        };
+                    @endphp
+                    <span class="ml-auto inline-flex items-center gap-1.5 {{ $statusClasses }}"
+                          style="font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px;">
+                        <x-dynamic-component :component="$statusIcon" style="width: 13px; height: 13px;" />
+                        {{ str_replace('_', ' ', ucfirst($trip->status)) }}
+                    </span>
                 </div>
 
-                {{-- Divider --}}
-                <div class="mx-5 border-t border-gray-100 dark:border-gray-700/50"></div>
+                {{-- 3. Card title --}}
+                <h3 style="font-size: 17px; font-weight: 500; margin: 14px 0 8px;" class="text-gray-900 dark:text-white leading-snug">
+                    {{ $trip->company_name }}
+                </h3>
 
-                {{-- Details --}}
-                <div class="px-5 py-4 space-y-3">
+                {{-- 4. Type badges --}}
+                <div class="flex flex-wrap items-center" style="gap: 6px; margin-bottom: 16px;">
+                    {{-- Audit type --}}
+                    @if($trip->audit_type === 'compliance')
+                        <span style="font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 4px; background-color: #E6F1FB; color: #0C447C;">
+                            Compliance
+                        </span>
+                    @else
+                        <span style="font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 4px; background-color: #E6F1FB; color: #0C447C;">
+                            Monitoring
+                        </span>
+                    @endif
+
+                    {{-- Schedule type --}}
+                    @if($trip->schedule_type === 'internal')
+                        <span style="font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 4px; background-color: #F1EFE8; color: #444441;">
+                            Internal
+                        </span>
+                    @else
+                        <span style="font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 4px; background-color: #E1F5EE; color: #085041;">
+                            External
+                        </span>
+                    @endif
+
+                    {{-- Region --}}
+                    @if($trip->region)
+                        <span style="font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 4px; background-color: #F1EFE8; color: #444441;">
+                            {{ $trip->region }}
+                        </span>
+                    @endif
+                </div>
+
+                {{-- 5. Divider --}}
+                <div style="height: 0.5px; margin-bottom: 16px;" class="bg-gray-200 dark:bg-gray-700"></div>
+
+                {{-- 6. Metadata rows --}}
+                <div class="flex flex-col" style="gap: 10px; margin-bottom: 20px;">
                     {{-- Date --}}
-                    <div class="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
-                        <x-heroicon-o-calendar-days class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-                        <span>{{ $trip->scheduled_date }}</span>
+                    <div class="flex items-start" style="gap: 10px; font-size: 13px;" >
+                        <x-heroicon-o-calendar-days style="width: 15px; height: 15px; margin-top: 1px;" class="text-gray-400 dark:text-gray-500 shrink-0" />
+                        <span class="text-gray-600 dark:text-gray-400" style="line-height: 1.5;">{{ $trip->scheduled_date }}</span>
                     </div>
 
-                    {{-- Members --}}
-                    <div class="flex items-start gap-3 text-xs text-gray-600 dark:text-gray-400">
-                        <x-heroicon-o-user-group class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0 mt-0.5" />
-                        <span class="line-clamp-2 leading-relaxed">{{ $trip->team_members }}</span>
+                    {{-- Team members --}}
+                    <div class="flex items-start" style="gap: 10px; font-size: 13px;">
+                        <x-heroicon-o-user-group style="width: 15px; height: 15px; margin-top: 1px;" class="text-gray-400 dark:text-gray-500 shrink-0" />
+                        <span class="text-gray-600 dark:text-gray-400 line-clamp-2" style="line-height: 1.5;">{{ $trip->team_members }}</span>
                     </div>
 
                     {{-- Driver --}}
-                    <div class="flex items-center gap-3 text-xs">
-                        <x-heroicon-o-identification class="w-4 h-4 shrink-0
-                            {{ $driverName ? 'text-green-500 dark:text-green-400' : 'text-gray-300 dark:text-gray-600' }}" />
+                    <div class="flex items-start" style="gap: 10px; font-size: 13px;">
+                        <x-heroicon-o-identification style="width: 15px; height: 15px; margin-top: 1px;"
+                            class="shrink-0 {{ $driverName ? 'text-green-500 dark:text-green-400' : 'text-gray-300 dark:text-gray-600' }}" />
                         @if($driverName)
-                            <span class="text-gray-700 dark:text-gray-300 font-medium">{{ $driverName }}</span>
+                            <span class="text-gray-700 dark:text-gray-300 font-medium" style="line-height: 1.5;">{{ $driverName }}</span>
                         @else
-                            <span class="text-gray-400 dark:text-gray-500 italic">No driver assigned</span>
+                            <span class="text-gray-400 dark:text-gray-500 italic" style="font-size: 12px; line-height: 1.5;">No driver assigned</span>
                         @endif
                     </div>
 
                     {{-- Vehicle --}}
                     @if($trip->vehicle)
-                        <div class="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
-                            <x-heroicon-o-truck class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-                            <span>{{ $trip->vehicle->registration_number }}</span>
+                        <div class="flex items-start" style="gap: 10px; font-size: 13px;">
+                            <x-heroicon-o-truck style="width: 15px; height: 15px; margin-top: 1px;" class="text-gray-400 dark:text-gray-500 shrink-0" />
+                            <span class="text-gray-600 dark:text-gray-400" style="line-height: 1.5;">{{ $trip->vehicle->registration_number }}</span>
                         </div>
                     @endif
                 </div>
 
-                {{-- Footer --}}
-                <div class="px-5 py-3.5 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50 rounded-b-xl">
-                    <a href="{{ url('/admin/audit-trips/' . $trip->id . '/edit') }}"
-                       class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1.5 transition-colors">
-                        <x-heroicon-o-pencil-square class="w-3.5 h-3.5" />
-                        Edit
-                    </a>
+                {{-- 7. Actions footer --}}
+                <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700" style="padding-top: 16px;">
+                    <div>
+                        {{-- Edit --}}
+                        <a href="{{ url('/admin/audit-trips/' . $trip->id . '/edit') }}"
+                           class="inline-flex items-center gap-1.5 border text-gray-500 dark:text-gray-400 border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                           style="padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;">
+                            <x-heroicon-o-pencil-square style="width: 14px; height: 14px;" />
+                            Edit
+                        </a>
+                    </div>
 
-                    @if($trip->status === 'scheduled')
-                        <button wire:click="markInProgress({{ $trip->id }})"
-                                class="text-xs font-medium px-3.5 py-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 flex items-center gap-1.5 transition-colors">
-                            <x-heroicon-o-play class="w-3.5 h-3.5" />
-                            Start
-                        </button>
-                    @elseif($trip->status === 'in_progress')
-                        <button wire:click="markCompleted({{ $trip->id }})"
-                                class="text-xs font-medium px-3.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 flex items-center gap-1.5 transition-colors">
-                            <x-heroicon-o-check-circle class="w-3.5 h-3.5" />
-                            Complete
-                        </button>
-                    @elseif($trip->status === 'completed')
-                        <span class="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-semibold bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-1.5 rounded-lg">
-                            <x-heroicon-s-check-circle class="w-3.5 h-3.5" />
-                            Completed
-                        </span>
-                    @endif
+                    <div>
+                        @if($trip->status === 'scheduled')
+                            <button wire:click="markInProgress({{ $trip->id }})"
+                                    class="inline-flex items-center gap-1.5 border border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                    style="padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;">
+                                <x-heroicon-o-play style="width: 14px; height: 14px;" />
+                                Start
+                            </button>
+                        @elseif($trip->status === 'in_progress')
+                            <button wire:click="markCompleted({{ $trip->id }})"
+                                    class="inline-flex items-center gap-1.5 border border-emerald-500 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400 bg-transparent hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                                    style="padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;">
+                                <x-heroicon-o-check-circle style="width: 14px; height: 14px;" />
+                                Complete
+                            </button>
+                        @elseif($trip->status === 'completed')
+                            <span class="inline-flex items-center gap-1.5 border border-emerald-500 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400"
+                                  style="padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 500;">
+                                <x-heroicon-s-check-circle style="width: 14px; height: 14px;" />
+                                Completed
+                            </span>
+                        @endif
+                    </div>
                 </div>
             </div>
         @empty
