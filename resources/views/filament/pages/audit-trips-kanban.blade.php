@@ -7,7 +7,7 @@
 <x-filament-panels::page>
 
     {{-- Filters Bar --}}
-    <div class="flex flex-col md:flex-row gap-3 mb-5 items-start md:items-center">
+    <div class="flex flex-col md:flex-row gap-3 mb-6 items-start md:items-center">
         {{-- Status Tabs --}}
         <div class="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
             @foreach([
@@ -58,7 +58,7 @@
     </div>
 
     {{-- Cards Grid --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         @forelse($trips as $trip)
             @php
                 $statusConfig = match($trip->status) {
@@ -72,7 +72,7 @@
                 $driverName = $trip->driver?->user?->name;
             @endphp
 
-            <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 border-l-4 {{ $statusConfig['border'] }} shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 border-l-4 {{ $statusConfig['border'] }} shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-250 ease-out">
                 {{-- Header --}}
                 <div class="px-5 pt-5 pb-3">
                     <div class="flex items-center justify-between mb-3">
@@ -96,7 +96,7 @@
                     </h3>
 
                     {{-- Tags --}}
-                    <div class="flex flex-wrap gap-1.5 mb-4">
+                    <div class="flex flex-wrap gap-1.5 mb-2">
                         <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium
                             {{ $trip->audit_type === 'compliance' ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400' : 'bg-cyan-50 text-cyan-700 dark:bg-cyan-900/20 dark:text-cyan-400' }}">
                             {{ ucfirst($trip->audit_type) }}
@@ -113,22 +113,25 @@
                     </div>
                 </div>
 
+                {{-- Divider --}}
+                <div class="mx-5 border-t border-gray-100 dark:border-gray-700/50"></div>
+
                 {{-- Details --}}
-                <div class="px-5 pb-4 space-y-2.5">
+                <div class="px-5 py-4 space-y-3">
                     {{-- Date --}}
-                    <div class="flex items-center gap-2.5 text-xs text-gray-600 dark:text-gray-400">
+                    <div class="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
                         <x-heroicon-o-calendar-days class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
                         <span>{{ $trip->scheduled_date }}</span>
                     </div>
 
                     {{-- Members --}}
-                    <div class="flex items-start gap-2.5 text-xs text-gray-600 dark:text-gray-400">
+                    <div class="flex items-start gap-3 text-xs text-gray-600 dark:text-gray-400">
                         <x-heroicon-o-user-group class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0 mt-0.5" />
                         <span class="line-clamp-2 leading-relaxed">{{ $trip->team_members }}</span>
                     </div>
 
                     {{-- Driver --}}
-                    <div class="flex items-center gap-2.5 text-xs">
+                    <div class="flex items-center gap-3 text-xs">
                         <x-heroicon-o-identification class="w-4 h-4 shrink-0
                             {{ $driverName ? 'text-green-500 dark:text-green-400' : 'text-gray-300 dark:text-gray-600' }}" />
                         @if($driverName)
@@ -140,7 +143,7 @@
 
                     {{-- Vehicle --}}
                     @if($trip->vehicle)
-                        <div class="flex items-center gap-2.5 text-xs text-gray-600 dark:text-gray-400">
+                        <div class="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
                             <x-heroicon-o-truck class="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
                             <span>{{ $trip->vehicle->registration_number }}</span>
                         </div>
@@ -148,7 +151,7 @@
                 </div>
 
                 {{-- Footer --}}
-                <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between">
+                <div class="px-5 py-3.5 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50 rounded-b-xl">
                     <a href="{{ url('/admin/audit-trips/' . $trip->id . '/edit') }}"
                        class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 flex items-center gap-1.5 transition-colors">
                         <x-heroicon-o-pencil-square class="w-3.5 h-3.5" />
@@ -157,20 +160,20 @@
 
                     @if($trip->status === 'scheduled')
                         <button wire:click="markInProgress({{ $trip->id }})"
-                                class="text-xs font-medium px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 flex items-center gap-1.5 transition-colors">
+                                class="text-xs font-medium px-3.5 py-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:hover:bg-amber-900/40 flex items-center gap-1.5 transition-colors">
                             <x-heroicon-o-play class="w-3.5 h-3.5" />
                             Start
                         </button>
                     @elseif($trip->status === 'in_progress')
                         <button wire:click="markCompleted({{ $trip->id }})"
-                                class="text-xs font-medium px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 flex items-center gap-1.5 transition-colors">
+                                class="text-xs font-medium px-3.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:hover:bg-emerald-900/40 flex items-center gap-1.5 transition-colors">
                             <x-heroicon-o-check-circle class="w-3.5 h-3.5" />
                             Complete
                         </button>
                     @elseif($trip->status === 'completed')
-                        <span class="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-medium">
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 font-semibold bg-emerald-50 dark:bg-emerald-900/20 px-3.5 py-1.5 rounded-lg">
                             <x-heroicon-s-check-circle class="w-3.5 h-3.5" />
-                            Done
+                            Completed
                         </span>
                     @endif
                 </div>
@@ -186,7 +189,7 @@
 
     {{-- Pagination --}}
     @if($trips->hasPages())
-        <div class="mt-6">
+        <div class="mt-8">
             {{ $trips->links() }}
         </div>
     @endif
