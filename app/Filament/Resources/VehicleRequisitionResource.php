@@ -129,6 +129,36 @@ class VehicleRequisitionResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('review_status')
+                    ->label('Reviews')
+                    ->getStateUsing(function (VehicleRequisition $record): string {
+                        if ($record->status !== 'completed') {
+                            return '—';
+                        }
+                        $hasAdmin = $record->hasAdminReview();
+                        $hasPassenger = $record->hasPassengerReview();
+
+                        if ($hasAdmin && $hasPassenger) {
+                            return '✅ Complete';
+                        }
+                        $pending = [];
+                        if (! $hasAdmin) {
+                            $pending[] = 'Admin';
+                        }
+                        if (! $hasPassenger) {
+                            $pending[] = 'Passenger';
+                        }
+
+                        return '⏳ '.implode(', ', $pending);
+                    })
+                    ->color(function (VehicleRequisition $record): string {
+                        if ($record->status !== 'completed') {
+                            return 'gray';
+                        }
+
+                        return ($record->hasAdminReview() && $record->hasPassengerReview()) ? 'success' : 'warning';
+                    })
+                    ->toggleable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -303,6 +333,19 @@ class VehicleRequisitionResource extends Resource
                     }),
 
                 Tables\Actions\ViewAction::make(),
+
+                // Submit Admin Review for completed trips
+                Tables\Actions\Action::make('submit_admin_review')
+                    ->label('Admin Review')
+                    ->icon('heroicon-o-star')
+                    ->color('info')
+                    ->visible(fn (VehicleRequisition $record): bool => $record->status === 'completed' && ! $record->hasAdminReview())
+                    ->url(fn (VehicleRequisition $record): string => url('/admin/driver-trip-reviews/create?'.http_build_query([
+                        'review_type' => 'admin',
+                        'driver_id' => $record->driver_id,
+                        'vehicle_id' => $record->vehicle_id,
+                        'vehicle_requisition_id' => $record->id,
+                    ]))),
             ])
             ->bulkActions([]);
     }
