@@ -49,4 +49,66 @@ class Driver extends Model
     {
         return $this->user->name ?? 'Unknown';
     }
+
+    public function performanceReviews(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DriverTripReview::class);
+    }
+
+    /**
+     * Overall average rating across all reviews.
+     */
+    public function getAverageRatingAttribute(): ?float
+    {
+        $avg = $this->performanceReviews()->whereNotNull('overall_rating')->avg('overall_rating');
+
+        return $avg ? round($avg, 2) : null;
+    }
+
+    /**
+     * Average rating for manual transmission trips.
+     */
+    public function getManualRatingAttribute(): ?float
+    {
+        $avg = $this->performanceReviews()->manual()->whereNotNull('overall_rating')->avg('overall_rating');
+
+        return $avg ? round($avg, 2) : null;
+    }
+
+    /**
+     * Average rating for automatic transmission trips.
+     */
+    public function getAutomaticRatingAttribute(): ?float
+    {
+        $avg = $this->performanceReviews()->automatic()->whereNotNull('overall_rating')->avg('overall_rating');
+
+        return $avg ? round($avg, 2) : null;
+    }
+
+    /**
+     * Total number of reviews for this driver.
+     */
+    public function getTotalReviewsAttribute(): int
+    {
+        return $this->performanceReviews()->count();
+    }
+
+    /**
+     * Performance status based on average rating.
+     */
+    public function getPerformanceStatusAttribute(): string
+    {
+        $avg = $this->average_rating;
+
+        if (is_null($avg)) {
+            return 'no_reviews';
+        }
+
+        return match (true) {
+            $avg >= 4.5 => 'excellent',
+            $avg >= 3.5 => 'good',
+            $avg >= 3.0 => 'average',
+            default => 'needs_attention',
+        };
+    }
 }

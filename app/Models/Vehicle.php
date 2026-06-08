@@ -16,6 +16,7 @@ class Vehicle extends Model
         'year',
         'type',
         'fuel_type',
+        'transmission',
         'color',
         'current_mileage',
         'status',

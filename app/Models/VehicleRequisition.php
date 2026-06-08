@@ -60,7 +60,7 @@ class VehicleRequisition extends Model
             if (empty($requisition->reference_number)) {
                 $year = now()->format('Y');
                 $last = static::whereYear('created_at', $year)->max('id') ?? 0;
-                $requisition->reference_number = 'VR-' . $year . '-' . str_pad($last + 1, 4, '0', STR_PAD_LEFT);
+                $requisition->reference_number = 'VR-'.$year.'-'.str_pad($last + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }
@@ -108,6 +108,37 @@ class VehicleRequisition extends Model
         if ($this->start_mileage && $this->end_mileage) {
             return $this->end_mileage - $this->start_mileage;
         }
+
         return null;
+    }
+
+    public function reviews(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(DriverTripReview::class, 'vehicle_requisition_id');
+    }
+
+    /**
+     * Check if admin review has been submitted for this trip.
+     */
+    public function hasAdminReview(): bool
+    {
+        return $this->reviews()->where('review_type', 'admin')->exists();
+    }
+
+    /**
+     * Check if passenger review has been submitted for this trip.
+     */
+    public function hasPassengerReview(): bool
+    {
+        return $this->reviews()->where('review_type', 'passenger')->exists();
+    }
+
+    /**
+     * Check if this completed trip needs any reviews.
+     */
+    public function needsReview(): bool
+    {
+        return $this->status === 'completed'
+            && (! $this->hasAdminReview() || ! $this->hasPassengerReview());
     }
 }
