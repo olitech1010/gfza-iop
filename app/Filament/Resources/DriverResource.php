@@ -106,6 +106,33 @@ class DriverResource extends Resource
                     ->label('Trips')
                     ->counts('requisitions')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('performance_reviews_count')
+                    ->label('Reviews')
+                    ->counts('performanceReviews')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('average_rating')
+                    ->label('Rating')
+                    ->getStateUsing(fn (Driver $record): ?string => $record->average_rating
+                        ? str_repeat('★', (int) round($record->average_rating)).str_repeat('☆', 5 - (int) round($record->average_rating)).' '.number_format($record->average_rating, 1)
+                        : '—'
+                    )
+                    ->color(fn (Driver $record) => match (true) {
+                        $record->average_rating >= 4.0 => 'success',
+                        $record->average_rating >= 3.0 => 'warning',
+                        $record->average_rating > 0 => 'danger',
+                        default => 'gray',
+                    }),
+                Tables\Columns\TextColumn::make('performance_status')
+                    ->label('Performance')
+                    ->getStateUsing(fn (Driver $record): string => match ($record->performance_status) {
+                        'excellent' => '🟢 Excellent',
+                        'good' => '🟢 Good',
+                        'average' => '🟡 Average',
+                        'needs_attention' => '🔴 Needs Attention',
+                        default => '—',
+                    })
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -116,6 +143,11 @@ class DriverResource extends Resource
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('view_performance')
+                    ->label('Performance')
+                    ->icon('heroicon-o-chart-bar')
+                    ->color('success')
+                    ->url(fn (Driver $record): string => url("/admin/driver-performance/{$record->id}")),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

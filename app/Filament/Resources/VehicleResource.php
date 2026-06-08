@@ -71,6 +71,13 @@ class VehicleResource extends Resource
                                 'hybrid' => 'Hybrid',
                             ])
                             ->required(),
+                        Forms\Components\Select::make('transmission')
+                            ->options([
+                                'manual' => 'Manual',
+                                'automatic' => 'Automatic',
+                            ])
+                            ->required()
+                            ->default('manual'),
                         Forms\Components\TextInput::make('color')
                             ->maxLength(255),
                         Forms\Components\TextInput::make('current_mileage')
@@ -128,6 +135,15 @@ class VehicleResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => ucfirst($state)),
+                Tables\Columns\TextColumn::make('transmission')
+                    ->label('Trans.')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'manual' => 'info',
+                        'automatic' => 'success',
+                        default => 'gray',
+                    })
                     ->formatStateUsing(fn (string $state): string => ucfirst($state)),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
