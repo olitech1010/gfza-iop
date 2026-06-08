@@ -198,4 +198,9 @@
         @endforeach
     </div>
     @endif
+
+    {{-- Driver Leaderboard --}}
+    <div class="mt-10">
+        @livewire(\App\Filament\Widgets\Transport\DriverLeaderboardWidget::class)
+    </div>
 </x-filament-panels::page>
